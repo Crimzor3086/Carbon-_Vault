@@ -242,14 +242,14 @@ def get_satellite_sources() -> List[SatelliteDataSource]:
     """Get all configured satellite data sources"""
     sources = []
     
+    # Landsat is free and doesn't require API key
+    sources.append(LandsatSource())
+    
     if APIConfig.PLANET_LABS_API_KEY:
         sources.append(PlanetLabsSource())
     
     if APIConfig.SENTINEL2_API_KEY:
         sources.append(Sentinel2Source())
-    
-    if APIConfig.LANDSAT_API_KEY:
-        sources.append(LandsatSource())
     
     return sources
 

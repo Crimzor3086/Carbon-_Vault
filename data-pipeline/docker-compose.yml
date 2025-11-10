@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  data-pipeline:
+    build: .
+    container_name: carbonvault-data-pipeline
+    environment:
+      LOG_LEVEL: INFO
+      PLANET_LABS_API_KEY: ${PLANET_LABS_API_KEY:-}
+      SENTINEL2_API_KEY: ${SENTINEL2_API_KEY:-}
+      ENERGY_METER_API_KEY: ${ENERGY_METER_API_KEY:-}
+      EMISSION_MONITOR_API_KEY: ${EMISSION_MONITOR_API_KEY:-}
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    ports:
+      - "8000:8000"
+    networks:
+      - carbonvault
+    restart: unless-stopped
+    profiles:
+      - pipeline
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: carbonvault-postgres
+    environment:
+      POSTGRES_DB: carbonvault
+      POSTGRES_USER: carbonvault
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - carbonvault
+    restart: unless-stopped
+    profiles:
+      - database
+
+  adminer:
+    image: adminer:latest
+    container_name: carbonvault-adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - carbonvault
+    depends_on:
+      - postgres
+    profiles:
+      - database
+
+networks:
+  carbonvault:
+    driver: bridge
+
+volumes:
+  postgres_data:
+
+# Usage:
+# Start just the pipeline:
+#   docker-compose up data-pipeline
+#
+# Start pipeline + database:
+#   docker-compose --profile database up
+#
+# Start everything including admin panel:
+#   docker-compose --profile pipeline --profile database up
+#
+# Build image:
+#   docker-compose build
+
