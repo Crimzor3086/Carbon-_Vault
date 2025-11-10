@@ -67,7 +67,7 @@ export default function SettingsPage() {
             <div className="space-y-3">
               <select className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                 <option>Mantle Network</option>
-                <option>Mantle Testnet</option>
+                <option>Mantle Sepolia Testnet</option>
               </select>
             </div>
           </div>

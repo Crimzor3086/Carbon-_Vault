@@ -18,10 +18,10 @@ module.exports = {
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 5000,
     },
-    mantleTestnet: {
-      url: process.env.MANTLE_TESTNET_RPC_URL || "https://rpc.testnet.mantle.xyz",
+    mantleSepolia: {
+      url: process.env.MANTLE_SEPOLIA_RPC_URL || "https://rpc.sepolia.mantle.xyz",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      chainId: 5001,
+      chainId: 5003,
     },
     hardhat: {
       chainId: 1337,
@@ -36,7 +36,7 @@ module.exports = {
   etherscan: {
     apiKey: {
       mantle: process.env.MANTLE_API_KEY || "",
-      mantleTestnet: process.env.MANTLE_TESTNET_API_KEY || "",
+      mantleSepolia: process.env.MANTLE_SEPOLIA_API_KEY || "",
     },
     customChains: [
       {
@@ -48,11 +48,11 @@ module.exports = {
         },
       },
       {
-        network: "mantleTestnet",
-        chainId: 5001,
+        network: "mantleSepolia",
+        chainId: 5003,
         urls: {
-          apiURL: "https://explorer.testnet.mantle.xyz/api",
-          browserURL: "https://explorer.testnet.mantle.xyz",
+          apiURL: "https://explorer.sepolia.mantle.xyz/api",
+          browserURL: "https://explorer.sepolia.mantle.xyz",
         },
       },
     ],

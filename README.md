@@ -68,6 +68,9 @@ npm run test
 
 # Deploy to Mantle Network
 npm run deploy:mantle
+
+# Deploy to Mantle Sepolia Testnet
+npm run deploy:mantle-sepolia
 ```
 
 #### Data Pipeline
