@@ -48,3 +48,6 @@ forge-out/
 *.ptau
 *.wasm
 
+# Documentation (ignore all .md files except README.md)
+*.md
+!README.md
