@@ -215,8 +215,8 @@ const Validators = () => {
 
       setSubmissions(getSubmissions());
 
-      toast({
-        title: "Proof Submitted",
+    toast({
+      title: "Proof Submitted",
         description: "Your verification proof has been submitted for review.",
       });
 
@@ -265,22 +265,22 @@ const Validators = () => {
   return (
     <div className="flex h-screen w-full overflow-hidden">
       <Sidebar />
-
+      
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
-
+        
         <main className="flex-1 overflow-y-auto">
           <div className="container mx-auto p-6 lg:p-8 space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-foreground mb-2">
-                  Validator Dashboard
-                </h1>
-                <p className="text-muted-foreground">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">
+                Validator Dashboard
+              </h1>
+              <p className="text-muted-foreground">
                   Verify carbon offset proofs and earn rewards
-                </p>
-              </div>
+              </p>
+            </div>
               <div className="flex gap-3">
                 <Button
                   variant="outline"
@@ -305,22 +305,22 @@ const Validators = () => {
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="projectId">Project ID</Label>
-                        <Input
-                          id="projectId"
-                          placeholder="e.g., PRJ-2024-001"
+                    <div className="space-y-2">
+                      <Label htmlFor="projectId">Project ID</Label>
+                      <Input
+                        id="projectId"
+                        placeholder="e.g., PRJ-2024-001"
                           value={projectId}
                           onChange={(e) => setProjectId(e.target.value)}
-                        />
-                      </div>
+                      />
+                    </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="emissionData">Emission Data (tCO2e)</Label>
-                        <Input
-                          id="emissionData"
-                          type="number"
-                          placeholder="e.g., 1250"
+                    <div className="space-y-2">
+                      <Label htmlFor="emissionData">Emission Data (tCO2e)</Label>
+                      <Input
+                        id="emissionData"
+                        type="number"
+                        placeholder="e.g., 1250"
                           value={emissionData}
                           onChange={(e) => setEmissionData(e.target.value)}
                         />
@@ -334,12 +334,12 @@ const Validators = () => {
                             CVT
                           </p>
                         )}
-                      </div>
+                    </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="documentation">Documentation</Label>
-                        <Textarea
-                          id="documentation"
+                    <div className="space-y-2">
+                      <Label htmlFor="documentation">Documentation</Label>
+                      <Textarea
+                        id="documentation"
                           placeholder="Provide project details, verification methodology, and supporting evidence..."
                           rows={6}
                           value={documentation}
@@ -348,16 +348,16 @@ const Validators = () => {
                         <p className="text-xs text-muted-foreground">
                           {documentation.length}/50 characters minimum
                         </p>
-                      </div>
+                    </div>
 
-                      <div className="space-y-2">
+                    <div className="space-y-2">
                         <Label>Upload Supporting Files (Optional)</Label>
-                        <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-smooth cursor-pointer">
-                          <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                          <p className="text-sm text-muted-foreground">
-                            Click to upload or drag and drop
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
+                      <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-smooth cursor-pointer">
+                        <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+                        <p className="text-sm text-muted-foreground">
+                          Click to upload or drag and drop
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
                             PDF, CSV, or JSON files (Max 10MB)
                           </p>
                         </div>
@@ -527,9 +527,9 @@ const Validators = () => {
                               </p>
                               <p className="text-2xl font-bold">
                                 {validatorStats.avgRewardPerProof} CVT
-                              </p>
-                            </div>
-                          </div>
+                        </p>
+                      </div>
+                    </div>
 
                           <Button
                             className="w-full gradient-primary"
@@ -547,7 +547,7 @@ const Validators = () => {
                                 Claim Rewards
                               </>
                             )}
-                          </Button>
+                    </Button>
                         </>
                       ) : (
                         <div className="text-center py-12">
@@ -561,19 +561,19 @@ const Validators = () => {
                           <Button className="gradient-primary">Connect Wallet</Button>
                         </div>
                       )}
-                    </CardContent>
-                  </Card>
+                </CardContent>
+              </Card>
 
                   {/* Reputation Card */}
-                  <Card className="shadow-card">
-                    <CardHeader>
+              <Card className="shadow-card">
+                <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Star className="h-5 w-5" />
                         Reputation
                       </CardTitle>
                       <CardDescription>Your validator standing</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
+                </CardHeader>
+                <CardContent className="space-y-6">
                       {isConnected && userReputationTier ? (
                         <>
                           <div className="text-center space-y-3">
@@ -588,40 +588,40 @@ const Validators = () => {
                               <p className="text-sm text-muted-foreground">
                                 Reputation Score
                               </p>
-                            </div>
-                          </div>
+                    </div>
+                  </div>
 
                           <div className="space-y-3">
-                            <div className="flex justify-between">
+                    <div className="flex justify-between">
                               <span className="text-sm text-muted-foreground">
                                 Verified
                               </span>
                               <span className="text-sm font-semibold">
                                 {userStats?.verifiedProofs || 0}
                               </span>
-                            </div>
-                            <div className="flex justify-between">
+                    </div>
+                    <div className="flex justify-between">
                               <span className="text-sm text-muted-foreground">
                                 Pending
                               </span>
                               <span className="text-sm font-semibold text-warning">
                                 {userStats?.pendingProofs || 0}
                               </span>
-                            </div>
-                            <div className="flex justify-between">
+                    </div>
+                    <div className="flex justify-between">
                               <span className="text-sm text-muted-foreground">
                                 Success Rate
                               </span>
                               <span className="text-sm font-semibold text-success">
                                 {userStats?.successRate.toFixed(1) || 0}%
                               </span>
-                            </div>
-                          </div>
+                    </div>
+                  </div>
 
                           <Button variant="outline" className="w-full">
                             <Trophy className="mr-2 h-4 w-4" />
                             View Rank
-                          </Button>
+                  </Button>
                         </>
                       ) : (
                         <div className="text-center py-8">
@@ -631,9 +631,9 @@ const Validators = () => {
                           </p>
                         </div>
                       )}
-                    </CardContent>
-                  </Card>
-                </div>
+                </CardContent>
+              </Card>
+            </div>
 
                 {/* Global Stats */}
                 <Card className="shadow-card">
@@ -688,8 +688,8 @@ const Validators = () => {
 
               {/* Submissions Tab */}
               <TabsContent value="submissions" className="space-y-6">
-                <Card className="shadow-card">
-                  <CardHeader>
+            <Card className="shadow-card">
+              <CardHeader>
                     <div className="flex items-center justify-between">
                       <div>
                         <CardTitle>My Proof Submissions</CardTitle>
@@ -707,10 +707,10 @@ const Validators = () => {
                         Export
                       </Button>
                     </div>
-                  </CardHeader>
-                  <CardContent>
+              </CardHeader>
+              <CardContent>
                     {userSubmissions.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="flex flex-col items-center justify-center py-12 text-center">
                         <Upload className="h-12 w-12 text-muted-foreground mb-4" />
                         <p className="text-lg font-medium text-foreground mb-2">
                           No submissions yet
@@ -867,29 +867,29 @@ const Validators = () => {
                     {loadingLeaderboard ? (
                       <div className="flex items-center justify-center py-12">
                         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                      </div>
-                    ) : (
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
                             <TableHead className="w-16">Rank</TableHead>
                             <TableHead>Validator</TableHead>
                             <TableHead>Proofs</TableHead>
                             <TableHead>Success Rate</TableHead>
                             <TableHead>Reputation</TableHead>
                             <TableHead>Total Rewards</TableHead>
-                            <TableHead>Status</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
+                        <TableHead>Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
                           {filteredLeaderboard.slice(0, 50).map((validator, index) => {
                             const tier = getReputationTier(validator.reputation);
                             const isCurrentUser =
                               address &&
                               validator.address.toLowerCase() ===
                                 address.toLowerCase();
-
-                            return (
+                        
+                        return (
                               <TableRow
                                 key={validator.address}
                                 className={
@@ -926,8 +926,8 @@ const Validators = () => {
                                       <Zap className="h-3 w-3 text-success" />
                                     )}
                                   </div>
-                                </TableCell>
-                                <TableCell>
+                            </TableCell>
+                            <TableCell>
                                   <div className="flex items-center gap-2">
                                     <span className="text-2xl">{tier.icon}</span>
                                     <div>
@@ -939,10 +939,10 @@ const Validators = () => {
                                       </p>
                                     </div>
                                   </div>
-                                </TableCell>
-                                <TableCell className="font-semibold">
+                            </TableCell>
+                            <TableCell className="font-semibold">
                                   {validator.totalRewards} CVT
-                                </TableCell>
+                            </TableCell>
                                 <TableCell>
                                   <Badge
                                     variant={
@@ -951,15 +951,15 @@ const Validators = () => {
                                   >
                                     {validator.isActive ? "Active" : "Inactive"}
                                   </Badge>
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
-                        </TableBody>
-                      </Table>
-                    )}
-                  </CardContent>
-                </Card>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
               </TabsContent>
 
               {/* Analytics Tab */}

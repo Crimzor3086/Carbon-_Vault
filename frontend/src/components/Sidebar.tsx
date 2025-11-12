@@ -36,10 +36,12 @@ export function Sidebar() {
       >
         <div className="flex h-full flex-col">
           {/* Logo */}
-          <div className="flex h-16 items-center gap-2 border-b border-border px-6">
-            <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center">
-              <span className="text-white font-bold text-lg">CV</span>
-            </div>
+          <div className="flex h-16 items-center gap-3 border-b border-border px-6">
+            <img 
+              src="/logo.png" 
+              alt="Carbon Vault Logo" 
+              className="h-10 w-10 object-contain"
+            />
             <span className="font-bold text-xl text-foreground">CarbonVault</span>
           </div>
 

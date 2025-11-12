@@ -287,12 +287,12 @@ const Marketplace = () => {
           <div className="container mx-auto p-6 lg:p-8 space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-foreground mb-2">
-                  Marketplace
-                </h1>
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">
+                Marketplace
+              </h1>
                 <p className="text-muted-foreground flex items-center gap-2">
-                  Buy and sell carbon credit tokens
+                Buy and sell carbon credit tokens
                   {lastFetchTime && (
                     <span className="text-xs">
                       • Last updated {new Date(lastFetchTime).toLocaleTimeString()}
@@ -481,43 +481,43 @@ const Marketplace = () => {
                       </p>
                     </CardContent>
                   </Card>
-                </div>
+            </div>
 
-                {/* Filters */}
-                <Card className="shadow-card">
-                  <CardContent className="pt-6">
+            {/* Filters */}
+            <Card className="shadow-card">
+              <CardContent className="pt-6">
                     <div className="space-y-4">
                       <div className="grid gap-4 md:grid-cols-5">
-                        <div className="relative md:col-span-2">
-                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            placeholder="Search listings..."
-                            className="pl-9"
+                  <div className="relative md:col-span-2">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search listings..."
+                      className="pl-9"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                          />
-                        </div>
+                    />
+                  </div>
                         <Select value={offsetTypeFilter} onValueChange={setOffsetTypeFilter}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Offset Type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="all">All Types</SelectItem>
-                            <SelectItem value="reforestation">Reforestation</SelectItem>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Offset Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="reforestation">Reforestation</SelectItem>
                             <SelectItem value="renewable energy">Renewable Energy</SelectItem>
                             <SelectItem value="carbon capture">Carbon Capture</SelectItem>
                             <SelectItem value="ocean conservation">Ocean Conservation</SelectItem>
-                          </SelectContent>
-                        </Select>
+                    </SelectContent>
+                  </Select>
                         <Select value={vintageFilter} onValueChange={setVintageFilter}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Vintage Year" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="all">All Years</SelectItem>
-                            <SelectItem value="2024">2024</SelectItem>
-                            <SelectItem value="2023">2023</SelectItem>
-                            <SelectItem value="2022">2022</SelectItem>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Vintage Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Years</SelectItem>
+                      <SelectItem value="2024">2024</SelectItem>
+                      <SelectItem value="2023">2023</SelectItem>
+                      <SelectItem value="2022">2022</SelectItem>
                             <SelectItem value="2021">2021</SelectItem>
                           </SelectContent>
                         </Select>
@@ -532,8 +532,8 @@ const Marketplace = () => {
                             <SelectItem value="price-high">Price: High to Low</SelectItem>
                             <SelectItem value="amount-low">Amount: Low to High</SelectItem>
                             <SelectItem value="amount-high">Amount: High to Low</SelectItem>
-                          </SelectContent>
-                        </Select>
+                    </SelectContent>
+                  </Select>
                       </div>
                       <div className="flex gap-2 flex-wrap">
                         <Button
@@ -555,11 +555,11 @@ const Marketplace = () => {
                           </Button>
                         )}
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                </div>
+              </CardContent>
+            </Card>
 
-                {/* Listings Grid */}
+            {/* Listings Grid */}
                 {loadingListings ? (
                   <div className="flex items-center justify-center py-12">
                     <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -569,17 +569,17 @@ const Marketplace = () => {
                   <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {filteredListings.length === 0 ? (
                       <Card className="shadow-card md:col-span-2 lg:col-span-3">
-                        <CardContent className="flex flex-col items-center justify-center py-12">
-                          <ShoppingCart className="h-12 w-12 text-muted-foreground mb-4" />
+                  <CardContent className="flex flex-col items-center justify-center py-12">
+                    <ShoppingCart className="h-12 w-12 text-muted-foreground mb-4" />
                           <p className="text-lg font-medium text-foreground mb-2">
                             No listings found
                           </p>
                           <p className="text-sm text-muted-foreground">
                             Try adjusting your filters or create a new listing
                           </p>
-                        </CardContent>
-                      </Card>
-                    ) : (
+                  </CardContent>
+                </Card>
+              ) : (
                       filteredListings.map((listing) => {
                         const expirationStatus = getExpirationStatus(listing);
                         const feeInfo = calculateMarketplaceFee(listing.totalValue, feePercentage);
@@ -587,9 +587,9 @@ const Marketplace = () => {
                         const isWatched = isWatching(listing.id);
                         
                         return (
-                          <Card key={listing.id} className="shadow-card hover:shadow-hover transition-smooth">
-                            <CardHeader>
-                              <div className="flex items-start justify-between">
+                  <Card key={listing.id} className="shadow-card hover:shadow-hover transition-smooth">
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
                                 <div className="flex-1">
                                   <CardTitle className="text-lg flex items-center gap-2">
                                     {parseFloat(listing.amount).toFixed(2)} CVT
@@ -600,8 +600,8 @@ const Marketplace = () => {
                                   <CardDescription className="mt-1 flex items-center gap-1">
                                     <User className="h-3 w-3" />
                                     {formatAddress(listing.seller)}
-                                  </CardDescription>
-                                </div>
+                          </CardDescription>
+                        </div>
                                 <div className="flex flex-col gap-2 items-end">
                                   <Button
                                     variant="ghost"
@@ -613,32 +613,32 @@ const Marketplace = () => {
                                       className={`h-4 w-4 ${isWatched ? 'fill-red-500 text-red-500' : ''}`}
                                     />
                                   </Button>
-                                  <Badge variant="secondary" className="bg-success/10 text-success">
-                                    <TrendingUp className="mr-1 h-3 w-3" />
+                        <Badge variant="secondary" className="bg-success/10 text-success">
+                          <TrendingUp className="mr-1 h-3 w-3" />
                                     {listing.yield}% APY
                                   </Badge>
                                   <Badge variant={expirationStatus.variant}>
                                     {expirationStatus.text}
-                                  </Badge>
+                        </Badge>
                                 </div>
-                              </div>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
                               <div className="flex gap-2 flex-wrap">
-                                <Badge variant="outline">{listing.offsetType}</Badge>
-                                <Badge variant="outline">Vintage {listing.vintage}</Badge>
-                              </div>
-                              
-                              <div className="flex items-center justify-between pt-2">
-                                <div>
+                        <Badge variant="outline">{listing.offsetType}</Badge>
+                        <Badge variant="outline">Vintage {listing.vintage}</Badge>
+                      </div>
+                      
+                      <div className="flex items-center justify-between pt-2">
+                        <div>
                                   <p className="text-sm text-muted-foreground flex items-center gap-1">
                                     <DollarSign className="h-3 w-3" />
                                     Price per CVT
                                   </p>
-                                  <p className="text-2xl font-bold text-foreground">
+                          <p className="text-2xl font-bold text-foreground">
                                     ${listing.pricePerToken}
-                                  </p>
-                                </div>
+                          </p>
+                        </div>
                                 {isOwner ? (
                                   <Button
                                     variant="destructive"
@@ -671,12 +671,12 @@ const Marketplace = () => {
                                     ) : (
                                       <>
                                         <ShoppingCart className="h-4 w-4 mr-2" />
-                                        Buy Now
+                          Buy Now
                                       </>
                                     )}
-                                  </Button>
+                        </Button>
                                 )}
-                              </div>
+                      </div>
 
                               <div className="pt-2 border-t border-border space-y-1">
                                 <div className="flex justify-between text-sm">
@@ -798,7 +798,7 @@ const Marketplace = () => {
                       </div>
                     </CardContent>
                   </Card>
-                )}
+              )}
               </TabsContent>
             </Tabs>
           </div>

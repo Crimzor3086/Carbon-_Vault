@@ -1,0 +1,24 @@
+[
+  {
+    "recipient": "0x7c538b83D0295f94C4bBAf8302095d9ED4b2Ad5f",
+    "amount": "100",
+    "projectId": "FOREST-RESTORATION-001",
+    "co2Tons": "100",
+    "validator": "0x0000000000000000000000000000000000000000"
+  },
+  {
+    "recipient": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+    "amount": "250",
+    "projectId": "RENEWABLE-ENERGY-002",
+    "co2Tons": "250",
+    "validator": "0x0000000000000000000000000000000000000000"
+  },
+  {
+    "recipient": "0x7c538b83D0295f94C4bBAf8302095d9ED4b2Ad5f",
+    "amount": "500",
+    "projectId": "OCEAN-CLEANUP-003",
+    "co2Tons": "500",
+    "validator": "0x0000000000000000000000000000000000000000"
+  }
+]
+
