@@ -118,6 +118,7 @@ const Marketplace = () => {
   // Buy confirmation dialog state
   const [buyDialogOpen, setBuyDialogOpen] = useState(false);
   const [selectedListing, setSelectedListing] = useState<any>(null);
+  const [purchaseAmount, setPurchaseAmount] = useState("");
 
   // Cancel confirmation dialog state
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
@@ -234,16 +235,39 @@ const Marketplace = () => {
     }
 
     setSelectedListing(listing);
+    setPurchaseAmount(listing.amount); // Default to full amount
     setBuyDialogOpen(true);
   };
 
   const confirmBuy = async () => {
     if (!selectedListing) return;
 
+    const amount = parseFloat(purchaseAmount);
+    const availableAmount = parseFloat(selectedListing.amount);
+
+    if (isNaN(amount) || amount <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid amount greater than 0.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (amount > availableAmount) {
+      toast({
+        title: "Insufficient Tokens",
+        description: `Only ${availableAmount} CVT available in this listing.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
-      await buyListing(selectedListing.id, selectedListing.totalValue);
+      await buyListing(selectedListing.id, purchaseAmount, selectedListing.pricePerToken);
       setBuyDialogOpen(false);
       setSelectedListing(null);
+      setPurchaseAmount("");
     } catch (error) {
       // Error handled by hook
     }
@@ -808,42 +832,91 @@ const Marketplace = () => {
       </div>
 
       {/* Buy Confirmation Dialog */}
-      <AlertDialog open={buyDialogOpen} onOpenChange={setBuyDialogOpen}>
+      <AlertDialog open={buyDialogOpen} onOpenChange={(open) => {
+        setBuyDialogOpen(open);
+        if (!open) {
+          setPurchaseAmount("");
+          setSelectedListing(null);
+        }
+      }}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm Purchase</AlertDialogTitle>
             <AlertDialogDescription>
-              You are about to purchase {selectedListing?.amount} CVT tokens
+              Select the amount of CVT tokens you want to purchase
             </AlertDialogDescription>
           </AlertDialogHeader>
           {selectedListing && (
             <div className="space-y-3 py-4">
-              <div className="p-4 rounded-lg bg-muted space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Amount:</span>
-                  <span className="font-medium">{selectedListing.amount} CVT</span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="purchaseAmount">Amount to Purchase (CVT)</Label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPurchaseAmount(selectedListing.amount)}
+                    className="h-7 text-xs"
+                  >
+                    Buy Max
+                  </Button>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Price per Token:</span>
-                  <span className="font-medium">${selectedListing.pricePerToken}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Subtotal:</span>
-                  <span className="font-medium">${selectedListing.totalValue}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Marketplace Fee ({feePercentage}%):
-                  </span>
-                  <span className="font-medium">
-                    ${calculateMarketplaceFee(selectedListing.totalValue, feePercentage).fee}
-                  </span>
-                </div>
-                <div className="pt-2 border-t border-border flex justify-between">
-                  <span className="font-medium">Total:</span>
-                  <span className="text-lg font-bold">${selectedListing.totalValue}</span>
-                </div>
+                <Input
+                  id="purchaseAmount"
+                  type="number"
+                  placeholder="0.00"
+                  min="0"
+                  max={selectedListing.amount}
+                  step="0.01"
+                  value={purchaseAmount}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const numValue = parseFloat(value);
+                    const maxValue = parseFloat(selectedListing.amount);
+                    if (value === "" || (!isNaN(numValue) && numValue >= 0 && numValue <= maxValue)) {
+                      setPurchaseAmount(value);
+                    }
+                  }}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Available: {selectedListing.amount} CVT
+                </p>
               </div>
+              {purchaseAmount && !isNaN(parseFloat(purchaseAmount)) && parseFloat(purchaseAmount) > 0 && (
+                <div className="p-4 rounded-lg bg-muted space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Amount:</span>
+                    <span className="font-medium">{parseFloat(purchaseAmount).toFixed(2)} CVT</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Price per Token:</span>
+                    <span className="font-medium">${selectedListing.pricePerToken}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Subtotal:</span>
+                    <span className="font-medium">
+                      ${(parseFloat(purchaseAmount) * parseFloat(selectedListing.pricePerToken)).toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">
+                      Marketplace Fee ({feePercentage}%):
+                    </span>
+                    <span className="font-medium">
+                      ${calculateMarketplaceFee(
+                        (parseFloat(purchaseAmount) * parseFloat(selectedListing.pricePerToken)).toFixed(2),
+                        feePercentage
+                      ).fee}
+                    </span>
+                  </div>
+                  <div className="pt-2 border-t border-border flex justify-between">
+                    <span className="font-medium">Total:</span>
+                    <span className="text-lg font-bold">
+                      ${(parseFloat(purchaseAmount) * parseFloat(selectedListing.pricePerToken)).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              )}
               <p className="text-xs text-muted-foreground">
                 By confirming, you agree to purchase these tokens at the listed price.
                 The transaction will be processed on the blockchain.
@@ -855,8 +928,16 @@ const Marketplace = () => {
             <AlertDialogAction
               onClick={confirmBuy}
               className="gradient-primary"
+              disabled={!purchaseAmount || isNaN(parseFloat(purchaseAmount)) || parseFloat(purchaseAmount) <= 0 || isBuying}
             >
-              Confirm Purchase
+              {isBuying ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Confirm Purchase"
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -215,7 +215,10 @@ export const CVT_MARKETPLACE_ABI = [
     type: 'function',
   },
   {
-    inputs: [{ name: 'listingId', type: 'uint256' }],
+    inputs: [
+      { name: 'listingId', type: 'uint256' },
+      { name: 'amount', type: 'uint256' },
+    ],
     name: 'buyCVT',
     outputs: [],
     stateMutability: 'nonpayable',

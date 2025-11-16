@@ -114,15 +114,22 @@ contract CVTMarketplace is ReentrancyGuard, Ownable {
     /**
      * @dev Buy CVT tokens from a listing
      * @param listingId ID of the listing to buy from
+     * @param amount Amount of CVT tokens to buy (0 = buy all available)
      */
-    function buyCVT(uint256 listingId) external nonReentrant {
+    function buyCVT(uint256 listingId, uint256 amount) external nonReentrant {
         Listing storage listing = listings[listingId];
         
         require(listing.active, "Listing inactive");
         require(listing.expiresAt == 0 || block.timestamp <= listing.expiresAt, "Listing expired");
         require(msg.sender != listing.seller, "Cannot buy own listing");
+        require(listing.amount > 0, "Listing has no tokens available");
         
-        uint256 totalPrice = listing.amount * listing.price;
+        // If amount is 0, buy all available tokens
+        uint256 purchaseAmount = amount == 0 ? listing.amount : amount;
+        require(purchaseAmount > 0, "Purchase amount must be greater than 0");
+        require(purchaseAmount <= listing.amount, "Insufficient tokens in listing");
+        
+        uint256 totalPrice = purchaseAmount * listing.price;
         uint256 fee = (totalPrice * marketplaceFeeBps) / 10000;
         uint256 sellerAmount = totalPrice - fee;
         
@@ -141,18 +148,23 @@ contract CVTMarketplace is ReentrancyGuard, Ownable {
         
         // Transfer CVT tokens from contract to buyer
         require(
-            cvtToken.transfer(msg.sender, listing.amount),
+            cvtToken.transfer(msg.sender, purchaseAmount),
             "CVT transfer failed"
         );
         
-        // Mark listing as inactive
-        listing.active = false;
+        // Update listing amount
+        listing.amount -= purchaseAmount;
+        
+        // Mark listing as inactive if all tokens are sold
+        if (listing.amount == 0) {
+            listing.active = false;
+        }
         
         emit ListingPurchased(
             listingId,
             msg.sender,
             listing.seller,
-            listing.amount,
+            purchaseAmount,
             totalPrice
         );
     }
@@ -215,6 +227,15 @@ contract CVTMarketplace is ReentrancyGuard, Ownable {
         address oldRecipient = feeRecipient;
         feeRecipient = newRecipient;
         emit FeeRecipientUpdated(oldRecipient, newRecipient);
+    }
+    
+    /**
+     * @dev Update stablecoin address (only owner) - for testing/configuration
+     * @param newStablecoin Address of the new stablecoin contract
+     */
+    function setStablecoin(address newStablecoin) external onlyOwner {
+        require(newStablecoin != address(0), "Invalid stablecoin address");
+        stablecoin = IERC20(newStablecoin);
     }
 }
 

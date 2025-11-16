@@ -54,12 +54,20 @@ async function main() {
   console.log("\n📄 Deploying CVTMarketplace...");
   const CVTMarketplace = await hre.ethers.getContractFactory("CVTMarketplace");
   
-  // Deploy with USDT placeholder (you can use any stablecoin address or deploy mock)
-  const mockStablecoin = deployer.address; // Temporary
-  const cvtMarketplace = await CVTMarketplace.deploy(cvtAddress, mockStablecoin, deployer.address);
+  // Use CVT token as stablecoin for testing (it's a valid ERC20)
+  // In production, use a real stablecoin address (USDC/USDT/etc)
+  const stablecoinAddress = process.env.STABLECOIN_ADDRESS || cvtAddress;
+  const cvtMarketplace = await CVTMarketplace.deploy(
+    cvtAddress, // CVT token
+    stablecoinAddress, // Stablecoin (using CVT for testing)
+    deployer.address // Owner
+  );
   await cvtMarketplace.waitForDeployment();
   const cvtMarketplaceAddress = await cvtMarketplace.getAddress();
   console.log("✅ CVTMarketplace deployed to:", cvtMarketplaceAddress);
+  if (stablecoinAddress === cvtAddress) {
+    console.log("   ℹ️  Using CVT token as stablecoin for testing");
+  }
 
   // Update CVTMinting with ValidatorRewards address
   console.log("\n🔗 Linking ValidatorRewards to CVTMinting...");

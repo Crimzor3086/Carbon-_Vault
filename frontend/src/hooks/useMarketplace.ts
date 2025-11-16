@@ -228,6 +228,7 @@ export function useCreateListing() {
 }
 
 export function useBuyListing() {
+  const { address } = useAccount();
   const { toast } = useToast();
   const { writeContractAsync } = useWriteContract();
   const [isPending, setIsPending] = useState(false);
@@ -237,9 +238,34 @@ export function useBuyListing() {
     hash: txHash,
   });
 
+  // Get stablecoin address from marketplace
+  const { data: stablecoinAddress } = useReadContract({
+    address: CONTRACT_ADDRESSES.CVTMarketplace as `0x${string}`,
+    abi: CVT_MARKETPLACE_ABI,
+    functionName: 'stablecoin',
+  });
+
+  // Get marketplace fee
+  const { data: feeBps } = useReadContract({
+    address: CONTRACT_ADDRESSES.CVTMarketplace as `0x${string}`,
+    abi: CVT_MARKETPLACE_ABI,
+    functionName: 'marketplaceFeeBps',
+  });
+
+  // Check stablecoin allowance
+  const { data: allowance, refetch: refetchAllowance } = useReadContract({
+    address: stablecoinAddress as `0x${string}`,
+    abi: ERC20_ABI,
+    functionName: 'allowance',
+    args: address && stablecoinAddress ? [address, CONTRACT_ADDRESSES.CVTMarketplace as `0x${string}`] : undefined,
+    query: {
+      enabled: !!address && !!stablecoinAddress,
+    },
+  });
+
   const buyListing = useCallback(
-    async (listingId: number, totalPrice: string) => {
-      if (!writeContractAsync) {
+    async (listingId: number, amount: string, pricePerToken: string) => {
+      if (!writeContractAsync || !address) {
         toast({
           title: 'Error',
           description: 'Unable to write to contract',
@@ -248,20 +274,107 @@ export function useBuyListing() {
         return;
       }
 
+      if (!stablecoinAddress) {
+        toast({
+          title: 'Error',
+          description: 'Stablecoin address not found',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      // Check if stablecoin address is valid (not zero address and not the user's address)
+      const stablecoinAddr = stablecoinAddress as `0x${string}`;
+      const zeroAddress = '0x0000000000000000000000000000000000000000' as `0x${string}`;
+      
+      if (stablecoinAddr.toLowerCase() === zeroAddress.toLowerCase()) {
+        toast({
+          title: 'Error',
+          description: 'Stablecoin address is not configured. Please contact the administrator.',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      // If stablecoin address is the same as user's address (mock/test setup), skip approval
+      const needsApproval = stablecoinAddr.toLowerCase() !== address.toLowerCase();
+      
+      // Warn if stablecoin is user's address (invalid configuration)
+      if (!needsApproval) {
+        toast({
+          title: 'Warning',
+          description: 'Stablecoin address is not properly configured. Purchase may fail. Please contact administrator.',
+          variant: 'destructive',
+        });
+        // Still proceed, but it will likely fail at contract level
+      }
+      
       setIsPending(true);
       try {
-        // In production, first approve stablecoin spending
-        // For now, we'll just call buyCVT
+        // Convert amount and price to wei (18 decimals)
+        const amountWei = parseUnits(amount, 18);
+        const priceWei = parseUnits(pricePerToken, 18);
+        
+        // Calculate total price (amount * price per token)
+        // Both are in 18 decimals, so multiply and divide by 1e18 to get result in 18 decimals
+        const oneEther = parseUnits('1', 18);
+        const totalPriceWei = (amountWei * priceWei) / oneEther;
+        
+        // Calculate fee (in basis points)
+        const feeBpsValue = feeBps ? Number(feeBps) : 250;
+        const feeWei = (totalPriceWei * BigInt(feeBpsValue)) / BigInt(10000);
+        
+        // Total amount needed (price + fee)
+        const totalNeededWei = totalPriceWei + feeWei;
+
+        // Step 1: Approve stablecoin if needed (skip if stablecoin is user's address - mock setup)
+        if (needsApproval) {
+          // Check current allowance
+          const currentAllowance = (allowance as bigint) || 0n;
+          
+          if (currentAllowance < totalNeededWei) {
+            toast({
+              title: 'Step 1 of 2: Approval Required',
+              description: 'Please approve the marketplace to spend your stablecoin.',
+            });
+
+            const approveTx = await writeContractAsync({
+              address: stablecoinAddr,
+              abi: ERC20_ABI,
+              functionName: 'approve',
+              args: [CONTRACT_ADDRESSES.CVTMarketplace as `0x${string}`, totalNeededWei],
+            });
+
+            toast({
+              title: 'Approval Submitted',
+              description: 'Waiting for approval confirmation...',
+            });
+
+            // Wait for approval transaction to be confirmed
+            // Wait a reasonable amount of time for the transaction to be mined
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+            
+            toast({
+              title: 'Approval Submitted',
+              description: 'Proceeding with purchase...',
+            });
+          }
+        } else {
+          // Mock/test setup - stablecoin is user's address, skip approval
+          console.warn('Stablecoin address is user address (mock setup), skipping approval');
+        }
+
+        // Step 2: Purchase CVT tokens
         toast({
-          title: 'Processing Purchase',
-          description: 'Please confirm the transaction...',
+          title: 'Step 2 of 2: Processing Purchase',
+          description: 'Please confirm the purchase transaction...',
         });
 
         const buyTx = await writeContractAsync({
           address: CONTRACT_ADDRESSES.CVTMarketplace as `0x${string}`,
           abi: CVT_MARKETPLACE_ABI,
           functionName: 'buyCVT',
-          args: [BigInt(listingId)],
+          args: [BigInt(listingId), amountWei],
         });
 
         setTxHash(buyTx);
@@ -280,8 +393,18 @@ export function useBuyListing() {
           errorMessage = 'Transaction was rejected';
         } else if (error?.message?.includes('insufficient funds')) {
           errorMessage = 'Insufficient funds';
+        } else if (error?.message?.includes('allowance')) {
+          errorMessage = 'Insufficient stablecoin allowance. Please approve the marketplace.';
         } else if (error?.message?.includes('Listing inactive')) {
           errorMessage = 'This listing is no longer active';
+        } else if (error?.message?.includes('Insufficient tokens')) {
+          errorMessage = 'Insufficient tokens available in this listing';
+        } else if (error?.message?.includes('ERC20: transfer amount exceeds allowance')) {
+          errorMessage = 'Insufficient stablecoin allowance. Please try again.';
+        } else if (error?.message?.includes('External transactions to internal accounts')) {
+          errorMessage = 'Stablecoin address is not properly configured. Please contact administrator to fix the marketplace configuration.';
+        } else if (error?.message?.includes('transferFrom') || error?.message?.includes('ERC20')) {
+          errorMessage = 'Stablecoin token error. The marketplace may not be properly configured with a valid stablecoin address.';
         }
         
         toast({
@@ -294,7 +417,7 @@ export function useBuyListing() {
         setIsPending(false);
       }
     },
-    [writeContractAsync, toast]
+    [writeContractAsync, toast, address, stablecoinAddress, feeBps, allowance, refetchAllowance]
   );
 
   return {
