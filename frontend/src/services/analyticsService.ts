@@ -191,11 +191,25 @@ function calculatePriceSpread(listings: MarketplaceListing[]): number {
 
 // Calculate average time to sell (in hours)
 function calculateAverageTimeToSell(listings: MarketplaceListing[]): number {
-  const soldListings = listings.filter(l => !l.active);
+  const soldListings = listings.filter(l => !l.active && l.createdAt);
   if (soldListings.length === 0) return 0;
   
-  // Mock calculation - in production, track actual sold time
-  return 48 + Math.random() * 24; // 48-72 hours average
+  // Calculate real average time to sell from listing creation to expiration/deactivation
+  const now = Math.floor(Date.now() / 1000);
+  const timesToSell = soldListings
+    .map(listing => {
+      // Estimate sell time as time between creation and expiration (or now if not expired)
+      const sellTime = listing.expiresAt > 0 && listing.expiresAt < now
+        ? listing.expiresAt - listing.createdAt
+        : now - listing.createdAt;
+      return sellTime / (24 * 60 * 60); // Convert to days
+    })
+    .filter(time => time > 0); // Filter out invalid times
+  
+  if (timesToSell.length === 0) return 0;
+  
+  const average = timesToSell.reduce((sum, time) => sum + time, 0) / timesToSell.length;
+  return Math.round(average * 24); // Return in hours
 }
 
 // Calculate average price

@@ -5,6 +5,7 @@ import { CONTRACT_ADDRESSES, CVT_MARKETPLACE_ABI, ERC20_ABI } from '@/lib/contra
 import { MarketplaceListing, parseListing } from '@/services/marketplaceService';
 import { useToast } from '@/hooks/use-toast';
 import { addTransaction, updateTransactionStatus, getBlockExplorerUrl } from '@/services/transactionHistory';
+import { updatePriceFromListings } from '@/services/priceService';
 
 // Hook to fetch all marketplace listings with multicall
 export function useMarketplaceListings() {
@@ -19,54 +20,67 @@ export function useMarketplaceListings() {
     functionName: 'getTotalListings',
   });
 
-  // Fetch all listings using multicall
+  // Create contract calls for all listings
+  const listingCalls = totalListings && totalListings > 0n
+    ? Array.from({ length: Number(totalListings) }, (_, i) => ({
+        address: CONTRACT_ADDRESSES.CVTMarketplace as `0x${string}`,
+        abi: CVT_MARKETPLACE_ABI,
+        functionName: 'getListing' as const,
+        args: [BigInt(i + 1)],
+      }))
+    : [];
+
+  // Fetch all listings using useReadContracts (batch read)
+  const { data: listingsData, refetch: refetchListings } = useReadContracts({
+    contracts: listingCalls,
+    query: {
+      enabled: listingCalls.length > 0,
+    },
+  });
+
+  // Process fetched listings
   useEffect(() => {
-    async function fetchListings() {
-      if (!totalListings || totalListings === 0n) {
+    if (!listingsData || listingsData.length === 0) {
+      if (totalListings === 0n) {
         setListings([]);
         setIsLoading(false);
-        return;
       }
-
-      setIsLoading(true);
-      const count = Number(totalListings);
-      
-      try {
-        // Create contract calls for all listings
-        const listingCalls = Array.from({ length: count }, (_, i) => ({
-          address: CONTRACT_ADDRESSES.CVTMarketplace as `0x${string}`,
-          abi: CVT_MARKETPLACE_ABI,
-          functionName: 'getListing' as const,
-          args: [BigInt(i + 1)],
-        }));
-
-        // Batch fetch all listings - we'll use a simpler approach
-        // In production, you'd use wagmi's useReadContracts with all calls
-        const fetchedListings: MarketplaceListing[] = [];
-        
-        // For now, we'll fetch sequentially (in production, use multicall library)
-        for (let i = 1; i <= count; i++) {
-          try {
-            // This would be replaced with actual multicall in production
-            // For now, we'll create mock data based on the listing ID
-            const mockListing = createMockListing(i);
-            fetchedListings.push(mockListing);
-          } catch (error) {
-            console.error(`Error fetching listing ${i}:`, error);
-          }
-        }
-
-        setListings(fetchedListings);
-        setLastFetchTime(Date.now());
-      } catch (error) {
-        console.error('Error fetching listings:', error);
-      } finally {
-        setIsLoading(false);
-      }
+      return;
     }
 
-    fetchListings();
-  }, [totalListings]);
+    setIsLoading(true);
+    try {
+      const fetchedListings: MarketplaceListing[] = [];
+      
+      listingsData.forEach((result, index) => {
+        if (result.status === 'success' && result.result) {
+          try {
+            const listingId = index + 1;
+            // wagmi returns tuple as an array, but we need to handle it properly
+            const listingTuple = result.result;
+            const parsedListing = parseListing(listingId, listingTuple);
+            fetchedListings.push(parsedListing);
+          } catch (error) {
+            console.error(`Error parsing listing ${index + 1}:`, error, result);
+          }
+        } else if (result.status === 'error') {
+          console.warn(`Failed to fetch listing ${index + 1}:`, result.error);
+        }
+      });
+
+      setListings(fetchedListings);
+      setLastFetchTime(Date.now());
+      
+      // Update price from real marketplace listings
+      if (fetchedListings.length > 0) {
+        updatePriceFromListings(fetchedListings);
+      }
+    } catch (error) {
+      console.error('Error processing listings:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [listingsData, totalListings]);
 
   // Auto-refetch every 30 seconds for production
   useEffect(() => {
@@ -79,7 +93,8 @@ export function useMarketplaceListings() {
 
   const refetch = useCallback(() => {
     refetchTotal();
-  }, [refetchTotal]);
+    refetchListings();
+  }, [refetchTotal, refetchListings]);
 
   return {
     listings,
@@ -90,41 +105,6 @@ export function useMarketplaceListings() {
   };
 }
 
-// Helper function to create mock listing (replace with actual blockchain call in production)
-function createMockListing(id: number): MarketplaceListing {
-  const sellers = [
-    '0x1234567890123456789012345678901234567890',
-    '0x2345678901234567890123456789012345678901',
-    '0x3456789012345678901234567890123456789012',
-    '0x4567890123456789012345678901234567890123',
-  ];
-  
-  const offsetTypes = ['Reforestation', 'Renewable Energy', 'Carbon Capture', 'Ocean Conservation'];
-  const vintages = ['2024', '2023', '2022', '2021'];
-  
-  const amount = (Math.random() * 1000 + 100).toFixed(2);
-  const pricePerToken = (Math.random() * 5 + 1).toFixed(2);
-  const totalValue = (parseFloat(amount) * parseFloat(pricePerToken)).toFixed(2);
-  const createdAt = Math.floor(Date.now() / 1000) - Math.random() * 30 * 24 * 60 * 60;
-  const expiresAt = Math.random() > 0.3 ? Math.floor(Date.now() / 1000) + Math.random() * 60 * 24 * 60 * 60 : 0;
-  
-  return {
-    id,
-    seller: sellers[id % sellers.length],
-    amount,
-    price: pricePerToken,
-    pricePerToken,
-    active: Math.random() > 0.2,
-    createdAt,
-    expiresAt,
-    totalValue,
-    isExpired: expiresAt > 0 && Math.floor(Date.now() / 1000) > expiresAt,
-    daysRemaining: expiresAt > 0 ? Math.max(0, Math.ceil((expiresAt - Math.floor(Date.now() / 1000)) / (24 * 60 * 60))) : null,
-    offsetType: offsetTypes[id % offsetTypes.length],
-    vintage: vintages[id % vintages.length],
-    yield: (5 + (id % 10) * 0.5).toFixed(1),
-  };
-}
 
 export function useCreateListing() {
   const { toast } = useToast();

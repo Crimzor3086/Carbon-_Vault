@@ -23,51 +23,62 @@ export interface CreateListingParams {
   expiresInDays: number;
 }
 
-// Mock offset types and vintages for listings
-const OFFSET_TYPES = ['Reforestation', 'Renewable Energy', 'Carbon Capture', 'Ocean Conservation'];
-const VINTAGE_YEARS = ['2024', '2023', '2022', '2021'];
-
-// Generate random mock data for listings
-function generateMockListingData(listingId: number): Pick<MarketplaceListing, 'offsetType' | 'vintage' | 'yield'> {
-  return {
-    offsetType: OFFSET_TYPES[listingId % OFFSET_TYPES.length],
-    vintage: VINTAGE_YEARS[listingId % VINTAGE_YEARS.length],
-    yield: (5 + (listingId % 10) * 0.5).toFixed(1),
-  };
-}
+// Note: offsetType, vintage, and yield are not stored on-chain
+// These fields are optional and can be added via metadata in the future
 
 // Parse listing data from smart contract
 export function parseListing(
   listingId: number,
   listingData: any
 ): MarketplaceListing {
-  const [seller, amount, price, active, createdAt, expiresAt] = listingData;
+  // Handle both tuple format and array format from wagmi
+  let seller: string;
+  let amount: bigint;
+  let price: bigint;
+  let active: boolean;
+  let createdAt: bigint;
+  let expiresAt: bigint;
+
+  if (Array.isArray(listingData)) {
+    // Direct array format
+    [seller, amount, price, active, createdAt, expiresAt] = listingData;
+  } else if (listingData && typeof listingData === 'object') {
+    // Tuple/object format from wagmi
+    seller = listingData.seller || listingData[0];
+    amount = listingData.amount || listingData[1];
+    price = listingData.price || listingData[2];
+    active = listingData.active ?? listingData[3];
+    createdAt = listingData.createdAt || listingData[4];
+    expiresAt = listingData.expiresAt || listingData[5];
+  } else {
+    throw new Error('Invalid listing data format');
+  }
   
   const amountFormatted = formatUnits(amount, 18);
   const priceFormatted = formatUnits(price, 18);
   const totalValue = (parseFloat(amountFormatted) * parseFloat(priceFormatted)).toFixed(2);
   
   const now = Math.floor(Date.now() / 1000);
-  const isExpired = expiresAt > 0 && now > expiresAt;
-  const daysRemaining = expiresAt > 0 
-    ? Math.max(0, Math.ceil((Number(expiresAt) - now) / (24 * 60 * 60)))
+  const expiresAtNum = Number(expiresAt);
+  const isExpired = expiresAtNum > 0 && now > expiresAtNum;
+  const daysRemaining = expiresAtNum > 0 
+    ? Math.max(0, Math.ceil((expiresAtNum - now) / (24 * 60 * 60)))
     : null;
-
-  const mockData = generateMockListingData(listingId);
 
   return {
     id: listingId,
-    seller,
+    seller: String(seller),
     amount: amountFormatted,
     price: priceFormatted,
     pricePerToken: priceFormatted,
     active: active && !isExpired,
     createdAt: Number(createdAt),
-    expiresAt: Number(expiresAt),
+    expiresAt: expiresAtNum,
     totalValue,
     isExpired,
     daysRemaining,
-    ...mockData,
+    // offsetType, vintage, and yield are not stored on-chain
+    // These can be added via metadata extension in the future
   };
 }
 

@@ -89,22 +89,11 @@ export function getPriceHistory(limit?: number): PricePoint[] {
   try {
     const stored = localStorage.getItem(PRICE_HISTORY_KEY);
     if (!stored) {
-      // Initialize with some sample data for demo
-      return initializeSamplePriceHistory();
+      // Return empty history - will be populated from marketplace listings
+      return [];
     }
     
     const history: PricePoint[] = JSON.parse(stored);
-    
-    // Check if data needs regeneration (if prices are out of range for new $1.0 base)
-    if (history.length > 0) {
-      const avgPrice = history.reduce((sum, p) => sum + p.price, 0) / history.length;
-      // If average price is significantly different from current base (1.0), regenerate
-      if (Math.abs(avgPrice - 1.0) > 0.6) {
-        console.log('🔄 Regenerating price history for new base price...');
-        return initializeSamplePriceHistory();
-      }
-    }
-    
     return limit ? history.slice(-limit) : history;
   } catch (error) {
     console.error('Error reading price history:', error);
@@ -127,62 +116,49 @@ function addPriceToHistory(point: PricePoint): void {
   }
 }
 
-// Initialize sample price history for demo
-function initializeSamplePriceHistory(): PricePoint[] {
-  const now = Date.now();
+// Initialize price history from marketplace listings
+// Uses real marketplace data instead of simulated data
+function initializePriceHistoryFromListings(listings: MarketplaceListing[]): PricePoint[] {
   const history: PricePoint[] = [];
+  const now = Date.now();
   
-  // Start from contract deployment date
-  const startTime = CONTRACT_DEPLOYMENT_DATE;
-  const timeElapsed = now - startTime;
+  // Get active listings and calculate weighted average price
+  const activeListings = listings.filter(l => l.active && !l.isExpired);
   
-  // Generate data from deployment to now
-  const basePrice = 1.0; // Base price at $1.0 (middle of $0.2-$1.8 range)
-  const minPrice = 0.2;
-  const maxPrice = 1.8;
+  if (activeListings.length === 0) {
+    // No listings yet, return empty history
+    return [];
+  }
   
-  // Calculate number of data points based on time elapsed
-  // Use 5-minute intervals for better granularity
-  const intervalMs = 5 * 60 * 1000; // 5 minutes
-  const pointsToGenerate = Math.min(Math.floor(timeElapsed / intervalMs), MAX_HISTORY_POINTS);
+  // Calculate weighted average price from listings
+  let totalValue = 0;
+  let totalAmount = 0;
   
-  for (let i = 0; i < pointsToGenerate; i++) {
-    const timestamp = startTime + (i * intervalMs);
+  activeListings.forEach(listing => {
+    const amount = parseFloat(listing.amount);
+    const price = parseFloat(listing.pricePerToken);
+    totalValue += amount * price;
+    totalAmount += amount;
+  });
+  
+  if (totalAmount > 0) {
+    const avgPrice = totalValue / totalAmount;
     
-    // Add some realistic price movement with wider range
-    const randomWalk = (Math.random() - 0.5) * 0.15; // ±15% movement for more variation
-    const trend = i * 0.00001; // Slight upward trend over time
-    const cyclical = Math.sin(i / 288) * 0.12; // Daily cycle (288 = 24h in 5-min intervals)
-    const weeklyPattern = Math.sin(i / 2016) * 0.08; // Weekly pattern (2016 = 7 days in 5-min intervals)
-    const price = basePrice + randomWalk + trend + cyclical + weeklyPattern;
-    
+    // Create a single price point from current listings
     history.push({
-      timestamp,
-      price: Math.max(minPrice, Math.min(maxPrice, price)), // Keep price between $0.2 and $1.8
-      volume24h: Math.random() * 50000 + 20000,
-      source: 'calculated',
+      timestamp: now,
+      price: avgPrice,
+      volume24h: totalValue,
+      source: 'listing',
     });
   }
   
-  // Save initial history
+  // Save to localStorage
   localStorage.setItem(PRICE_HISTORY_KEY, JSON.stringify(history));
   
   return history;
 }
 
-// Update price with simulated market movement (for demo)
-export function simulatePriceUpdate(): void {
-  const currentPrice = getCVTPrice();
-  const change = (Math.random() - 0.5) * 0.05; // ±2.5% change
-  const newPrice = currentPrice.current * (1 + change);
-  
-  setCVTPrice({
-    current: parseFloat(newPrice.toFixed(4)),
-    high24h: Math.max(currentPrice.high24h, newPrice),
-    low24h: Math.min(currentPrice.low24h, newPrice),
-    change24h: ((newPrice - currentPrice.current) / currentPrice.current * 100),
-  });
-}
 
 // Format price for display
 export function formatPrice(price: number, decimals: number = 2): string {
@@ -296,7 +272,6 @@ export function resetPriceToDefault(): void {
 // Clear price history
 export function clearPriceHistory(): void {
   localStorage.removeItem(PRICE_HISTORY_KEY);
-  initializeSamplePriceHistory();
 }
 
 // Force reset price to default (useful for testing)

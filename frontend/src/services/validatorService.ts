@@ -169,40 +169,9 @@ export function calculateReputationScore(
   return Math.round(proofScore + successScore + ageScore);
 }
 
-// Generate mock validators for demonstration
-export function generateMockValidators(count: number = 10): Validator[] {
-  const validators: Validator[] = [];
-  const now = Date.now();
-  
-  for (let i = 0; i < count; i++) {
-    const verifiedCount = Math.floor(Math.random() * 150) + 10;
-    const successRate = 70 + Math.random() * 25; // 70-95%
-    const accountAgeDays = Math.floor(Math.random() * 200) + 10;
-    const pendingRewards = (Math.random() * 50 + 5).toFixed(2);
-    const totalEarnings = (verifiedCount * (Math.random() * 2 + 0.5)).toFixed(2);
-    
-    validators.push({
-      address: `0x${Math.random().toString(16).substr(2, 40)}`,
-      totalRewards: totalEarnings,
-      pendingRewards,
-      verifiedProofsCount: verifiedCount,
-      successRate: parseFloat(successRate.toFixed(1)),
-      reputation: calculateReputationScore(verifiedCount, successRate, accountAgeDays),
-      rank: i + 1,
-      isActive: Math.random() > 0.2,
-      joinedDate: now - (accountAgeDays * 24 * 60 * 60 * 1000),
-      lastActivityDate: now - (Math.random() * 7 * 24 * 60 * 60 * 1000),
-      totalEarnings,
-      avgRewardPerProof: (parseFloat(totalEarnings) / verifiedCount).toFixed(2),
-    });
-  }
-  
-  // Sort by verified proofs count for ranking
-  validators.sort((a, b) => b.verifiedProofsCount - a.verifiedProofsCount);
-  validators.forEach((v, i) => v.rank = i + 1);
-  
-  return validators;
-}
+// Note: generateMockValidators has been removed
+// Validators are now fetched directly from the ValidatorRewards contract
+// Use the useValidatorsLeaderboard hook in useValidators.ts to get real validator data
 
 // Calculate overall validator statistics
 export function calculateGlobalStats(validators: Validator[]): ValidatorStats {

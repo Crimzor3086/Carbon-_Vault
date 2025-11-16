@@ -180,9 +180,11 @@ const Reports = () => {
   // Calculate compliance metrics
   const esgCompliance = parseFloat(stakedCVT) > 0 ? 'Active' : 'Inactive';
   const zkProofStatus = 'Inactive'; // TODO: Get from actual ZK contract
-  const auditScore = isConnected && parseFloat(totalCVT) > 0 
-    ? Math.min(100, Math.floor((parseFloat(stakedCVT) / parseFloat(totalCVT)) * 100 + Math.random() * 20))
+  // Calculate audit score from real staking ratio (no random component)
+  const stakingRatio = isConnected && parseFloat(totalCVT) > 0
+    ? (parseFloat(stakedCVT) / parseFloat(totalCVT)) * 100
     : 0;
+  const auditScore = Math.min(100, Math.floor(stakingRatio));
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
