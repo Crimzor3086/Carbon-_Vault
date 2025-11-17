@@ -125,7 +125,7 @@ async function main() {
   // Save addresses to file
   const fs = require('fs');
   const addresses = {
-    network: "mantleSepolia",
+    network: "moonbaseAlpha",
     chainId: 5003,
     deployer: deployer.address,
     timestamp: new Date().toISOString(),

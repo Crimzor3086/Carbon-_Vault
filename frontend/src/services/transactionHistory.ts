@@ -145,14 +145,14 @@ export function formatTransactionType(type: Transaction['type']): string {
 }
 
 // Get block explorer URL
-export function getBlockExplorerUrl(txHash: string, chainId: number = 5003): string {
-  // Mantle Sepolia
-  if (chainId === 5003) {
-    return `https://explorer.sepolia.mantle.xyz/tx/${txHash}`;
+export function getBlockExplorerUrl(txHash: string, chainId: number = 1287): string {
+  // Moonbase Alpha
+  if (chainId === 1287) {
+    return `https://moonbase.moonscan.io/tx/${txHash}`;
   }
   
-  // Default
-  return `https://explorer.sepolia.mantle.xyz/tx/${txHash}`;
+  // Default fallback to Moonbeam mainnet
+  return `https://moonbeam.moonscan.io/tx/${txHash}`;
 }
 
 // Export history as CSV

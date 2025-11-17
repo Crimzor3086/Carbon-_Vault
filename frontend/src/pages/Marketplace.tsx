@@ -76,11 +76,11 @@ import {
   getExpirationStatus,
   calculateMarketplaceStats,
   exportListingsToCSV,
-  CVT_REFERENCE_PRICE_MNT,
+  CVT_REFERENCE_PRICE_GLMR,
   CVT_REFERENCE_PRICE_USD,
-  MIN_LISTING_PRICE_MNT,
+  MIN_LISTING_PRICE_GLMR,
   MIN_LISTING_PRICE_USD,
-  usdToMnt,
+  usdToGlmr,
 } from "@/services/marketplaceService";
 import { MarketplaceAnalytics } from "@/components/MarketplaceAnalytics";
 import { saveAnalyticsSnapshot } from "@/services/analyticsService";
@@ -332,7 +332,7 @@ const Marketplace = () => {
                     </span>
                   )}
                   <span className="text-xs">
-                    • Payments in {isNativePayment ? "MNT (native)" : "stablecoin"}
+                    • Payments in {isNativePayment ? "GLMR (native)" : "stablecoin"}
                     {!isNativePayment && stablecoinAddress ? ` (${stablecoinAddress})` : ""}
                   </span>
                 </p>
@@ -384,7 +384,7 @@ const Marketplace = () => {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="price">
-                          Price per Token ({isNativePayment ? "MNT (native)" : "USD / Stablecoin"})
+                          Price per Token ({isNativePayment ? "GLMR (native)" : "USD / Stablecoin"})
                         </Label>
                         <div className="flex items-center gap-3">
                           <Input
@@ -398,8 +398,8 @@ const Marketplace = () => {
                             <div className="text-xs text-muted-foreground min-w-[120px]">
                               ≈{" "}
                               {newListingPrice && !Number.isNaN(parseFloat(newListingPrice))
-                                ? `${usdToMnt(parseFloat(newListingPrice)).toFixed(2)} MNT`
-                                : "0.00 MNT"}
+                                ? `${usdToGlmr(parseFloat(newListingPrice)).toFixed(2)} GLMR`
+                                : "0.00 GLMR"}
                             </div>
                           )}
                         </div>
@@ -407,11 +407,11 @@ const Marketplace = () => {
                           {!isNativePayment ? (
                             <>
                               <p>
-                                Minimum: ${MIN_LISTING_PRICE_USD.toFixed(2)} ({MIN_LISTING_PRICE_MNT} MNT) per CVT
+                                Minimum: ${MIN_LISTING_PRICE_USD.toFixed(2)} ({MIN_LISTING_PRICE_GLMR} GLMR) per CVT
                               </p>
                               <p>
                                 Recommended: ${CVT_REFERENCE_PRICE_USD.toFixed(2)} (
-                                {CVT_REFERENCE_PRICE_MNT.toFixed(2)} MNT) based on Sept&nbsp;2025 nature-based removals.
+                                {CVT_REFERENCE_PRICE_GLMR.toFixed(2)} GLMR) based on Sept&nbsp;2025 nature-based removals.
                               </p>
                               {newListingPrice &&
                                 parseFloat(newListingPrice) < CVT_REFERENCE_PRICE_USD &&
@@ -423,7 +423,7 @@ const Marketplace = () => {
                             </>
                           ) : (
                             <p>
-                              Marketplace is configured for native MNT payments. Enter the per-CVT price in MNT (18 decimals).
+                              Marketplace is configured for native GLMR payments. Enter the per-CVT price in GLMR (18 decimals).
                             </p>
                           )}
                         </div>
@@ -706,14 +706,14 @@ const Marketplace = () => {
                         <div>
                           <p className="text-sm text-muted-foreground flex items-center gap-1">
                             <DollarSign className="h-3 w-3" />
-                            Price per CVT ({isNativePayment ? "MNT" : "Stablecoin"})
+                            Price per CVT ({isNativePayment ? "GLMR" : "Stablecoin"})
                           </p>
                           <p className="text-2xl font-bold text-foreground">
                             ${listing.pricePerToken}
                           </p>
                           {!isNativePayment && (
                             <p className="text-xs text-muted-foreground">
-                              ≈ {usdToMnt(parseFloat(listing.pricePerToken || "0")).toFixed(2)} MNT
+                              ≈ {usdToGlmr(parseFloat(listing.pricePerToken || "0")).toFixed(2)} GLMR
                             </p>
                           )}
                         </div>

@@ -334,11 +334,11 @@ export function exportListingsToCSV(listings: MarketplaceListing[]): void {
   document.body.removeChild(link);
 }
 
-// Convert a USD price to MNT equivalent
-export function usdToMnt(priceUsd: number): number {
+// Convert a USD price to GLMR equivalent
+export function usdToGlmr(priceUsd: number): number {
   if (Number.isNaN(priceUsd)) {
     return 0;
   }
-  return priceUsd / MNT_PRICE_USD;
+  return priceUsd / GLMR_PRICE_USD;
 }
 

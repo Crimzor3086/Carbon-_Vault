@@ -50,7 +50,7 @@ function showHelp() {
 ╚════════════════════════════════════════════════════════════════╝
 
 Usage:
-  npx hardhat run scripts/mint-cvt.js --network mantleSepolia [options]
+  npx hardhat run scripts/mint-cvt.js --network moonbaseAlpha [options]
 
 Options:
   --amount <number>       Amount of CVT to mint (default: 100)
@@ -63,24 +63,24 @@ Options:
 
 Examples:
   # Mint 100 CVT to yourself
-  npx hardhat run scripts/mint-cvt.js --network mantleSepolia
+  npx hardhat run scripts/mint-cvt.js --network moonbaseAlpha
 
   # Mint custom amount
-  npx hardhat run scripts/mint-cvt.js --network mantleSepolia --amount 500
+  npx hardhat run scripts/mint-cvt.js --network moonbaseAlpha --amount 500
 
   # Mint to specific address
-  npx hardhat run scripts/mint-cvt.js --network mantleSepolia \\
+  npx hardhat run scripts/mint-cvt.js --network moonbaseAlpha \\
     --amount 250 \\
     --recipient 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
 
   # Mint with custom project
-  npx hardhat run scripts/mint-cvt.js --network mantleSepolia \\
+  npx hardhat run scripts/mint-cvt.js --network moonbaseAlpha \\
     --amount 1000 \\
     --project "FOREST-RESTORATION-2024" \\
     --co2 1000
 
   # Batch mint from file
-  npx hardhat run scripts/mint-cvt.js --network mantleSepolia \\
+  npx hardhat run scripts/mint-cvt.js --network moonbaseAlpha \\
     --batch minting-list.json
 
 Batch File Format (JSON):

@@ -272,11 +272,11 @@ export function ProofSubmissionGuide() {
                       <div># Submit 10 proofs for yourself</div>
                       <div>ACTION=submit PROOFS=10 \</div>
                       <div className="pl-4">npx hardhat run scripts/manage-validators.js \</div>
-                      <div className="pl-4">--network mantleSepolia</div>
+                      <div className="pl-4">--network moonbaseAlpha</div>
                       <div className="mt-3"># Submit for another validator</div>
                       <div>ACTION=submit VALIDATOR=0xAddress PROOFS=5 \</div>
                       <div className="pl-4">npx hardhat run scripts/manage-validators.js \</div>
-                      <div className="pl-4">--network mantleSepolia</div>
+                      <div className="pl-4">--network moonbaseAlpha</div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -307,7 +307,7 @@ export function ProofSubmissionGuide() {
                       <div className="bg-black/90 text-green-400 p-3 rounded-lg font-mono text-xs">
                         <div>ACTION=batch FILE=validators.json \</div>
                         <div className="pl-4">npx hardhat run scripts/manage-validators.js \</div>
-                        <div className="pl-4">--network mantleSepolia</div>
+                        <div className="pl-4">--network moonbaseAlpha</div>
                       </div>
                     </div>
                   </AccordionContent>
@@ -443,8 +443,8 @@ export function ProofSubmissionGuide() {
                     <div className="space-y-2 text-sm text-muted-foreground">
                       <p>Gas costs vary by network conditions:</p>
                       <ul className="list-disc list-inside space-y-1 text-xs">
-                        <li>Single proof: ~50,000 gas (~0.0005 MNT)</li>
-                        <li>Batch (10 proofs): ~200,000 gas (~0.002 MNT)</li>
+                        <li>Single proof: ~50,000 gas (~0.0005 GLMR)</li>
+                        <li>Batch (10 proofs): ~200,000 gas (~0.002 GLMR)</li>
                         <li>Batch submissions are 4x more efficient!</li>
                       </ul>
                     </div>

@@ -27,7 +27,7 @@ function showHelp() {
 ╚════════════════════════════════════════════════════════════════╝
 
 Usage:
-  ACTION=<action> [OPTIONS] npx hardhat run scripts/manage-validators.js --network mantleSepolia
+  ACTION=<action> [OPTIONS] npx hardhat run scripts/manage-validators.js --network moonbaseAlpha
 
 Actions (use ACTION environment variable):
   submit                    Submit proof verifications
@@ -48,30 +48,30 @@ Environment Variables:
 Examples:
 
   # Submit 5 proofs for yourself
-  ACTION=submit npx hardhat run scripts/manage-validators.js --network mantleSepolia
+  ACTION=submit npx hardhat run scripts/manage-validators.js --network moonbaseAlpha
 
   # Submit 10 proofs for a specific validator
   ACTION=submit VALIDATOR=0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb PROOFS=10 \\
-    npx hardhat run scripts/manage-validators.js --network mantleSepolia
+    npx hardhat run scripts/manage-validators.js --network moonbaseAlpha
 
   # Check validator stats
   ACTION=check VALIDATOR=0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb \\
-    npx hardhat run scripts/manage-validators.js --network mantleSepolia
+    npx hardhat run scripts/manage-validators.js --network moonbaseAlpha
 
   # Fund rewards contract with 1000 CVT
   ACTION=fund AMOUNT=1000 \\
-    npx hardhat run scripts/manage-validators.js --network mantleSepolia
+    npx hardhat run scripts/manage-validators.js --network moonbaseAlpha
 
   # Set reward per proof to 2 CVT
   ACTION=set-reward AMOUNT=2 \\
-    npx hardhat run scripts/manage-validators.js --network mantleSepolia
+    npx hardhat run scripts/manage-validators.js --network moonbaseAlpha
 
   # Batch submit from file
   ACTION=batch FILE=validators.json \\
-    npx hardhat run scripts/manage-validators.js --network mantleSepolia
+    npx hardhat run scripts/manage-validators.js --network moonbaseAlpha
 
   # List all validators
-  ACTION=list npx hardhat run scripts/manage-validators.js --network mantleSepolia
+  ACTION=list npx hardhat run scripts/manage-validators.js --network moonbaseAlpha
 
 Batch File Format (JSON):
   [

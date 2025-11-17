@@ -66,7 +66,7 @@ async function main() {
     console.log("🎉 Validator proofs added successfully!");
     console.log("═".repeat(60));
     console.log("\n💡 Tip: Run this script again with different PROOFS value:");
-    console.log("   PROOFS=10 npx hardhat run scripts/add-validator-proofs.js --network mantleSepolia");
+    console.log("   PROOFS=10 npx hardhat run scripts/add-validator-proofs.js --network moonbaseAlpha");
 
   } catch (error) {
     console.error("\n❌ Error adding proofs:");

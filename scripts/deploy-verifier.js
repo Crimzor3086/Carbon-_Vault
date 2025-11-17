@@ -68,7 +68,7 @@ async function main() {
   console.log(`  Status: Ready to mint CVT tokens!\n`);
 
   console.log("🚀 Next Step:");
-  console.log("  Run: npx hardhat run scripts/mint-cvt.js --network mantleSepolia\n");
+  console.log("  Run: npx hardhat run scripts/mint-cvt.js --network moonbaseAlpha\n");
 }
 
 main()

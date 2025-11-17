@@ -40,7 +40,7 @@ async function main() {
   if (pendingRewards === 0n) {
     console.log("\n⚠️  No rewards to claim!");
     console.log("\n💡 Tip: Submit some proof verifications first:");
-    console.log("   ACTION=submit PROOFS=10 npx hardhat run scripts/manage-validators.js --network mantleSepolia");
+    console.log("   ACTION=submit PROOFS=10 npx hardhat run scripts/manage-validators.js --network moonbaseAlpha");
     return;
   }
 
@@ -59,7 +59,7 @@ async function main() {
     console.log(`   Shortfall: ${hre.ethers.formatEther(pendingRewards - contractBalance)} CVT`);
     console.log("\n💡 Fund the contract first:");
     console.log(`   ACTION=fund AMOUNT=${Math.ceil(Number(hre.ethers.formatEther(pendingRewards - contractBalance)) + 100)} \\`);
-    console.log("     npx hardhat run scripts/manage-validators.js --network mantleSepolia");
+    console.log("     npx hardhat run scripts/manage-validators.js --network moonbaseAlpha");
     return;
   }
 

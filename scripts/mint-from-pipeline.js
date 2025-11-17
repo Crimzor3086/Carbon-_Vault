@@ -66,7 +66,7 @@ function showHelp() {
 ╚════════════════════════════════════════════════════════════════╝
 
 Usage:
-  npx hardhat run scripts/mint-from-pipeline.js --network mantleSepolia [options]
+  npx hardhat run scripts/mint-from-pipeline.js --network moonbaseAlpha [options]
 
 Options:
   --run-pipeline        Run data-pipeline/run_pipeline.py before minting

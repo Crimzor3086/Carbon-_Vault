@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 /**
  * @title CarbonVault
  * @dev Main contract for tokenizing Real World Assets (RWA) with carbon credits
- * Built on Mantle Network with ZK privacy features
+ * Built on Moonbeam Network with ZK privacy features
  */
 contract CarbonVault is ERC20, ERC20Burnable, Ownable, ReentrancyGuard {
     // Asset structure for RWA tokenization

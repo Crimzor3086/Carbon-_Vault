@@ -136,7 +136,7 @@ contract CVTMarketplace is ReentrancyGuard, Ownable {
         bool payWithNative = address(stablecoin) == address(0);
         
         if (payWithNative) {
-            require(msg.value == totalPrice, "Incorrect MNT payment");
+            require(msg.value == totalPrice, "Incorrect GLMR payment");
             
             (bool sentSeller, ) = listing.seller.call{value: sellerAmount}("");
             require(sentSeller, "Seller payment failed");
@@ -146,7 +146,7 @@ contract CVTMarketplace is ReentrancyGuard, Ownable {
                 require(sentFee, "Fee payment failed");
             }
         } else {
-            require(msg.value == 0, "Do not send MNT");
+            require(msg.value == 0, "Do not send GLMR");
             
             require(
                 stablecoin.transferFrom(msg.sender, listing.seller, sellerAmount),

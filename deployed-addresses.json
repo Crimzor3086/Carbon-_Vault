@@ -1,5 +1,5 @@
 {
-  "network": "mantleSepolia",
+  "network": "moonbaseAlpha",
   "chainId": 5003,
   "deployer": "0x7c538b83D0295f94C4bBAf8302095d9ED4b2Ad5f",
   "timestamp": "2025-11-17T09:50:00.000Z",

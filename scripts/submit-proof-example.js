@@ -4,7 +4,7 @@ const hre = require("hardhat");
  * Simple example script for submitting validator proofs
  * 
  * Usage:
- * VALIDATOR=0xAddress PROOFS=10 npx hardhat run scripts/submit-proof-example.js --network mantleSepolia
+ * VALIDATOR=0xAddress PROOFS=10 npx hardhat run scripts/submit-proof-example.js --network moonbaseAlpha
  */
 
 async function main() {
