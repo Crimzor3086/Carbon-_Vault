@@ -4,7 +4,7 @@
 
 [![Network](https://img.shields.io/badge/Network-Mantle%20Sepolia-blue)](https://sepolia.mantle.xyz)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-success)](https://github.com)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-success)](https://github.com/Innovah-Tech/Carbon-Vault)
 
 **Carbon Vault** is a decentralized platform for tokenizing, trading, and verifying carbon credits using blockchain technology, zero-knowledge proofs, and real-world data integration.
 
@@ -46,19 +46,25 @@ Mantle Sepolia testnet MNT
 git clone <repository-url>
 cd "Carbon Vault"
 
-# Install dependencies
+# Install dependencies (root + frontend)
 npm install
 cd frontend && npm install && cd ..
 ```
 
 ### **3. Configuration**
 
-Create `.env` file in project root:
+Create `.env` file in project root (never commit secrets):
 
 ```env
+# Hardhat deployer
 PRIVATE_KEY=your_private_key_without_0x
 MANTLE_SEPOLIA_RPC_URL=https://rpc.sepolia.mantle.xyz
+
+# Optional marketplace override (default uses CVT token)
+# STABLECOIN_ADDRESS=0x0000000000000000000000000000000000000000  # accept native MNT
 ```
+
+If you plan to run the Python data pipeline, copy `data-pipeline/.env.example` and set the required API keys (Planet Labs, Sentinel, OpenAQ, etc.).
 
 ### **4. Run Frontend**
 
@@ -127,11 +133,11 @@ Carbon Vault/
 
 | Contract | Address | Purpose |
 |----------|---------|---------|
-| **CVTMinting** | `0xc5645f895a48c8A572368AaFeaAb2D42d1203819` | ERC20 token minting |
-| **CVTStaking** | `0x80bBdD4D4606DF5Ba6561e4B9C4a59B49061f713` | Staking & rewards |
-| **CVTMarketplace** | `0x290C258b604a3Cda5014B004ffe9c92Ab22D0F1c` | P2P trading |
-| **ValidatorRewards** | `0x647F8C626a90b5b8D4A69723bB672C759DD8A027` | Validator incentives |
-| **CarbonOffsetVerifier** | `0xA5eE5D0567122EeF5FEfC35224e4D0d5C5A3a521` | ZK proof verification |
+| **CVTMinting** | `0x6354888aAb631cDdc1599123458922bC6CE8fdfc` | ERC20 token minting + faucet |
+| **CVTStaking** | `0xC0E76A94bA3762303cE86d4c30381BbA8Ce6D7d0` | Staking & rewards |
+| **CVTMarketplace** | `0x9237A02a8F823a47eEaC6b59fa469591036e2d3e` | P2P trading |
+| **ValidatorRewards** | `0x165Ac1b08F53a8cd6FA56F6260c987f68E9BfB74` | Validator incentives |
+| **CarbonOffsetVerifier** | `0x6bB4e8E2B46386A910d58b8B9bcf40373e43D649` | ZK proof verification |
 
 ### **Key Functions**
 
@@ -264,9 +270,6 @@ python run_pipeline.py
 ```
 
 ### **Auto-Mint from Pipeline Output**
-# Faucet (Test CVT)
-
-Users can grab 5 CVT per hour directly from the dashboard faucet button. The feature calls `CVTMinting.claimFaucet()` behind the scenes (default amount and cooldown can be tuned by the contract owner). This helps new wallets try staking/marketplace flows without running the pipeline.
 
 After running the pipeline you can mint CVT directly from the generated measurements:
 
@@ -279,6 +282,18 @@ HARDHAT_NETWORK=mantleSepolia node scripts/mint-from-pipeline.js --run-pipeline 
 ```
 
 Options include `--min-co2`, `--file <custom_json>`, `--recipient`, `--validator`, and `--dry-run` for previews. The script reuses the proof generation helpers from `mint-cvt.js`, so each qualifying pipeline record becomes a mint transaction with matching project IDs and CO₂ amounts.
+
+### **Faucet (Test CVT)**
+
+During development every connected wallet can claim 5 CVT per hour from the dashboard faucet button. Under the hood this calls `CVTMinting.claimFaucet()`. Owners can tune or disable the faucet with:
+
+```bash
+npx hardhat console --network mantleSepolia
+> const staking = await ethers.getContractAt("CVTMinting", "<address>")
+> await staking.setFaucetConfig(ethers.parseEther("5"), 3600)
+```
+
+This gives other contributors instant test funds without needing access to your private pipeline runs.
 
 ### **Configuration**
 
