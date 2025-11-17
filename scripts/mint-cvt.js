@@ -95,10 +95,10 @@ Batch File Format (JSON):
   ]
 
 Network:
-  Mantle Sepolia Testnet
-  Chain ID: 5003
-  RPC: https://rpc.sepolia.mantle.xyz
-  Explorer: https://explorer.sepolia.mantle.xyz
+  Moonbase Alpha Testnet
+  Chain ID: 1287
+  RPC: https://rpc.api.moonbase.moonbeam.network
+  Explorer: https://moonbase.moonscan.io
 
 Deployed Contracts:
   CVTMinting: ${deployedAddresses.contracts.CVTMinting}
@@ -107,8 +107,8 @@ Deployed Contracts:
   ValidatorRewards: ${deployedAddresses.contracts.ValidatorRewards}
 
 Notes:
-  - Ensure you have testnet MNT for gas fees
-  - Get testnet MNT from: https://faucet.sepolia.mantle.xyz
+  - Ensure you have testnet DEV/GLMR for gas fees
+  - Get testnet tokens from: https://docs.moonbeam.network/builders/get-started/faucet/
   - Each minting generates a unique commitment
   - Minting records are saved to minting-records.json
   `);
@@ -209,7 +209,7 @@ async function mintCVT(cvtContract, config, signer) {
 
   // Submit minting transaction
   console.log("\n📤 Submitting minting transaction...");
-  console.log("   This may take a few moments on Mantle Sepolia...");
+  console.log("   This may take a few moments on Moonbase Alpha...");
 
   try {
     // Convert commitment string to bytes32
@@ -223,12 +223,12 @@ async function mintCVT(cvtContract, config, signer) {
       commitmentBytes32,
       config.projectId,
       config.validator
-      // Let Mantle auto-estimate gas (explicit gasLimit causes issues)
+      // Let Moonbeam auto-estimate gas (explicit gasLimit causes issues)
     );
 
     console.log("\n✓ Transaction submitted!");
     console.log(`  Transaction Hash: ${tx.hash}`);
-    console.log(`  Explorer: https://explorer.sepolia.mantle.xyz/tx/${tx.hash}`);
+    console.log(`  Explorer: https://moonbase.moonscan.io/tx/${tx.hash}`);
 
     console.log("\n⏳ Waiting for confirmation...");
     const receipt = await tx.wait();
@@ -360,7 +360,7 @@ async function main() {
   }
 
   console.log("\n╔════════════════════════════════════════════════════════════════╗");
-  console.log("║          CVT Token Minting on Mantle Sepolia                  ║");
+  console.log("║          CVT Token Minting on Moonbase Alpha                  ║");
   console.log("╚════════════════════════════════════════════════════════════════╝");
 
   // Get signer
@@ -387,11 +387,11 @@ async function main() {
 
   // Check signer balance
   const balance = await hre.ethers.provider.getBalance(signer.address);
-  console.log(`  Signer Balance: ${hre.ethers.formatEther(balance)} MNT`);
+  console.log(`  Signer Balance: ${hre.ethers.formatEther(balance)} GLMR`);
 
   if (balance === 0n) {
-    console.error("\n❌ Error: Insufficient MNT balance for gas fees!");
-    console.error("   Get testnet MNT from: https://faucet.sepolia.mantle.xyz");
+    console.error("\n❌ Error: Insufficient GLMR balance for gas fees!");
+    console.error("   Get testnet tokens from: https://docs.moonbeam.network/builders/get-started/faucet/");
     return;
   }
 
@@ -406,8 +406,8 @@ async function main() {
   console.log("║                  ✨ Minting Complete! ✨                      ║");
   console.log("╚════════════════════════════════════════════════════════════════╝");
   console.log("\n🔗 Useful Links:");
-  console.log(`  Block Explorer: https://explorer.sepolia.mantle.xyz/address/${signer.address}`);
-  console.log(`  CVTMinting Contract: https://explorer.sepolia.mantle.xyz/address/${deployedAddresses.contracts.CVTMinting}`);
+  console.log(`  Block Explorer: https://moonbase.moonscan.io/address/${signer.address}`);
+  console.log(`  CVTMinting Contract: https://moonbase.moonscan.io/address/${deployedAddresses.contracts.CVTMinting}`);
   console.log(`  Minting Records: ${path.join(__dirname, "..", "minting-records.json")}`);
   console.log("\n💡 Next Steps:");
   console.log("  - View your CVT balance in the frontend dashboard");

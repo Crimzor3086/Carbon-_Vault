@@ -49,7 +49,7 @@ async function main() {
     // Submit batch
     const tx = await validatorRewards.batchSubmitProof(validators);
     console.log("Transaction Hash:", tx.hash);
-    console.log("Explorer:", `https://explorer.sepolia.mantle.xyz/tx/${tx.hash}`);
+    console.log("Explorer:", `https://moonbase.moonscan.io/tx/${tx.hash}`);
     
     // Wait for confirmation
     console.log("\n⏳ Waiting for confirmation...");

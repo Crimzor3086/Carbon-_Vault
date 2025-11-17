@@ -23,7 +23,7 @@ async function main() {
   console.log("Minting 500 CVT for FOREST-RESTORATION project...");
   const tx = await cvt.mintCVT(signer.address, amount, proof, inputs, commitment, "FOREST-RESTORATION-2024", "0x0000000000000000000000000000000000000000");
   console.log("TX:", tx.hash);
-  console.log("Explorer: https://explorer.sepolia.mantle.xyz/tx/" + tx.hash);
+  console.log("Explorer: https://moonbase.moonscan.io/tx/" + tx.hash);
   
   const receipt = await tx.wait();
   console.log("\n✅ Success! Block:", receipt.blockNumber);

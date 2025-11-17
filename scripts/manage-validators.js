@@ -112,7 +112,7 @@ async function submitProofs(validatorRewards, validator, proofs, signer) {
   const tx = await validatorRewards.batchSubmitProof(validators);
   
   console.log(`Transaction hash: ${tx.hash}`);
-  console.log(`Explorer: https://explorer.sepolia.mantle.xyz/tx/${tx.hash}`);
+  console.log(`Explorer: https://moonbase.moonscan.io/tx/${tx.hash}`);
   
   console.log("\n⏳ Waiting for confirmation...");
   const receipt = await tx.wait();

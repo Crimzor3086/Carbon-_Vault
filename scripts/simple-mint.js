@@ -66,7 +66,7 @@ async function main() {
     );
 
     console.log(`✓ Transaction: ${tx.hash}`);
-    console.log(`  Explorer: https://explorer.sepolia.mantle.xyz/tx/${tx.hash}\n`);
+    console.log(`  Explorer: https://moonbase.moonscan.io/tx/${tx.hash}\n`);
 
     console.log("⏳ Waiting for confirmation...");
     const receipt = await tx.wait();

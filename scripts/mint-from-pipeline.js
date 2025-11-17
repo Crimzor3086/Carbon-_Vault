@@ -62,7 +62,7 @@ function parseArgs() {
 function showHelp() {
   console.log(`
 ╔════════════════════════════════════════════════════════════════╗
-║    Pipeline → Proof → Mint Automation (Mantle Sepolia)        ║
+║    Pipeline → Proof → Mint Automation (Moonbase Alpha)        ║
 ╚════════════════════════════════════════════════════════════════╝
 
 Usage:

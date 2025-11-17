@@ -77,7 +77,7 @@ async function main() {
   try {
     const tx = await validatorRewards.claimReward();
     console.log(`Transaction Hash: ${tx.hash}`);
-    console.log(`Explorer: https://explorer.sepolia.mantle.xyz/tx/${tx.hash}`);
+    console.log(`Explorer: https://moonbase.moonscan.io/tx/${tx.hash}`);
 
     console.log("\n⏳ Waiting for confirmation...");
     const receipt = await tx.wait();
@@ -125,9 +125,9 @@ async function main() {
     console.log("╚════════════════════════════════════════════════════════════════╝");
 
     console.log("\n🔗 Useful Links:");
-    console.log(`  Your Address: https://explorer.sepolia.mantle.xyz/address/${signer.address}`);
-    console.log(`  ValidatorRewards Contract: https://explorer.sepolia.mantle.xyz/address/${deployedAddresses.contracts.ValidatorRewards}`);
-    console.log(`  Transaction: https://explorer.sepolia.mantle.xyz/tx/${tx.hash}`);
+    console.log(`  Your Address: https://moonbase.moonscan.io/address/${signer.address}`);
+    console.log(`  ValidatorRewards Contract: https://moonbase.moonscan.io/address/${deployedAddresses.contracts.ValidatorRewards}`);
+    console.log(`  Transaction: https://moonbase.moonscan.io/tx/${tx.hash}`);
 
     console.log("\n💡 Next Steps:");
     console.log("  - View your updated balance in the frontend dashboard");
@@ -145,8 +145,8 @@ async function main() {
     } else if (error.message.includes("user rejected")) {
       console.log("\n⚠️  Transaction was rejected in your wallet.");
     } else if (error.message.includes("insufficient funds")) {
-      console.log("\n⚠️  Insufficient MNT for gas fees.");
-      console.log("Get testnet MNT from: https://faucet.sepolia.mantle.xyz");
+      console.log("\n⚠️  Insufficient GLMR for gas fees.");
+      console.log("Get testnet tokens from: https://docs.moonbeam.network/builders/get-started/faucet/");
     }
   }
 

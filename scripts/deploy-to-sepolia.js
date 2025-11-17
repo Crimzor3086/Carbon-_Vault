@@ -1,21 +1,21 @@
 const hre = require("hardhat");
 
 async function main() {
-  console.log("🚀 Deploying CarbonVault contracts to Mantle Sepolia...\n");
+  console.log("🚀 Deploying CarbonVault contracts to Moonbase Alpha...\n");
 
   const [deployer] = await hre.ethers.getSigners();
   console.log("📍 Deploying with account:", deployer.address);
   
   // Check balance
   const balance = await hre.ethers.provider.getBalance(deployer.address);
-  console.log("💰 Account balance:", hre.ethers.formatEther(balance), "MNT\n");
+  console.log("💰 Account balance:", hre.ethers.formatEther(balance), "GLMR\n");
 
   if (balance === 0n) {
-    console.error("❌ Error: Account has no MNT balance!");
-    console.log("\n📝 To get test MNT:");
-    console.log("   1. Visit: https://faucet.sepolia.mantle.xyz");
+    console.error("❌ Error: Account has no GLMR balance!");
+    console.log("\n📝 To get test DEV/GLMR:");
+    console.log("   1. Visit: https://docs.moonbeam.network/builders/get-started/faucet/");
     console.log("   2. Connect wallet:", deployer.address);
-    console.log("   3. Request test MNT tokens\n");
+    console.log("   3. Request test tokens\n");
     process.exit(1);
   }
 
@@ -120,13 +120,13 @@ async function main() {
   console.log("2. Verify contracts on explorer (optional)");
   console.log("3. Test minting CVT tokens");
   console.log("\n🔗 View on Explorer:");
-  console.log(`   https://explorer.sepolia.mantle.xyz/address/${cvtAddress}`);
+  console.log(`   https://moonbase.moonscan.io/address/${cvtAddress}`);
 
   // Save addresses to file
   const fs = require('fs');
   const addresses = {
     network: "moonbaseAlpha",
-    chainId: 5003,
+    chainId: 1287,
     deployer: deployer.address,
     timestamp: new Date().toISOString(),
     contracts: {

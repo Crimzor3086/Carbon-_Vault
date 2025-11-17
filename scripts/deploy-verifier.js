@@ -16,7 +16,7 @@ async function main() {
   console.log(`  Deployer: ${deployer.address}`);
 
   const balance = await hre.ethers.provider.getBalance(deployer.address);
-  console.log(`  Balance: ${hre.ethers.formatEther(balance)} MNT\n`);
+  console.log(`  Balance: ${hre.ethers.formatEther(balance)} GLMR\n`);
 
   // Load deployed addresses
   const deployedAddressesPath = path.join(__dirname, "..", "deployed-addresses.json");
@@ -30,7 +30,7 @@ async function main() {
   const verifierAddress = await verifier.getAddress();
 
   console.log(`✓ CarbonOffsetVerifier deployed to: ${verifierAddress}`);
-  console.log(`  Explorer: https://explorer.sepolia.mantle.xyz/address/${verifierAddress}\n`);
+  console.log(`  Explorer: https://moonbase.moonscan.io/address/${verifierAddress}\n`);
 
   // Update CVTMinting contract to use new verifier
   console.log("🔧 Updating CVTMinting contract...");
@@ -39,7 +39,7 @@ async function main() {
 
   console.log(`  Setting ZK Verifier to: ${verifierAddress}`);
   const tx = await cvtMinting.setZKVerifier(verifierAddress, {
-    gasLimit: 100000000 // 100M gas for Mantle
+    gasLimit: 100000000 // 100M gas buffer for Moonbase
   });
   console.log(`  Transaction: ${tx.hash}`);
   

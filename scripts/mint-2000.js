@@ -50,7 +50,7 @@ function saveMintingRecord(record) {
 
 async function main() {
   console.log("\n╔════════════════════════════════════════════════════════════════╗");
-  console.log("║          Minting 2000 CVT on Mantle Sepolia                  ║");
+  console.log("║          Minting 2000 CVT on Moonbase Alpha                  ║");
   console.log("╚════════════════════════════════════════════════════════════════╝");
 
   const [signer] = await hre.ethers.getSigners();
@@ -71,7 +71,7 @@ async function main() {
 
   // Check balance
   const balance = await hre.ethers.provider.getBalance(signer.address);
-  console.log(`  Signer Balance: ${hre.ethers.formatEther(balance)} MNT`);
+  console.log(`  Signer Balance: ${hre.ethers.formatEther(balance)} GLMR`);
 
   // Minting parameters
   const amount = "2000";
@@ -104,7 +104,7 @@ async function main() {
 
   // Submit minting transaction
   console.log("\n📤 Submitting minting transaction...");
-  console.log("   This may take a few moments on Mantle Sepolia...");
+  console.log("   This may take a few moments on Moonbase Alpha...");
 
   const amountWei = hre.ethers.parseEther(amount);
   const tx = await cvtContract.mintCVT(
@@ -119,7 +119,7 @@ async function main() {
 
   console.log("\n✓ Transaction submitted!");
   console.log(`  Transaction Hash: ${tx.hash}`);
-  console.log(`  Explorer: https://explorer.sepolia.mantle.xyz/tx/${tx.hash}`);
+  console.log(`  Explorer: https://moonbase.moonscan.io/tx/${tx.hash}`);
 
   console.log("\n⏳ Waiting for confirmation...");
   const receipt = await tx.wait();
@@ -180,8 +180,8 @@ async function main() {
   console.log("║                  ✨ Minting Complete! ✨                      ║");
   console.log("╚════════════════════════════════════════════════════════════════╝");
   console.log("\n🔗 Useful Links:");
-  console.log(`  Block Explorer: https://explorer.sepolia.mantle.xyz/address/${signer.address}`);
-  console.log(`  CVTMinting Contract: https://explorer.sepolia.mantle.xyz/address/${deployedAddresses.contracts.CVTMinting}`);
+  console.log(`  Block Explorer: https://moonbase.moonscan.io/address/${signer.address}`);
+  console.log(`  CVTMinting Contract: https://moonbase.moonscan.io/address/${deployedAddresses.contracts.CVTMinting}`);
   console.log("\n");
 }
 
