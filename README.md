@@ -2,7 +2,7 @@
 
 > Blockchain-based carbon credit trading and verification platform
 
-[![Network](https://img.shields.io/badge/Network-Moonbase%20Alpha-purple)](https://moonbase.moonscan.io)
+[![Network](https://img.shields.io/badge/Network-Polkadot-red)](https://polkadot.network)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-success)](https://github.com/Innovah-Tech/Carbon-Vault)
 
@@ -23,7 +23,7 @@
 - 🔐 **Zero-Knowledge Proofs** - Private carbon offset verification
 - 📡 **Data Pipeline** - IoT sensors and satellite data integration
 - 🎨 **Modern UI** - React + TypeScript + TailwindCSS
-- ⛓️ **Smart Contracts** - Solidity on Moonbeam Network
+- ⛓️ **Smart Contracts** - Solidity on Polkadot Network
 - 🔄 **Real-time Updates** - Live blockchain data
 
 ---
@@ -36,14 +36,14 @@
 Node.js 18+
 npm or yarn
 MetaMask wallet
-Moonbase Alpha DEV tokens (GLMR testnet)
+Polkadot testnet tokens (GLMR)
 ```
 
 ### **2. Installation**
 
 ```bash
 # Clone repository
-git clone <repository-url>
+git clone https://github.com/Crimzor3086/Carbon-_Vault.git
 cd "Carbon Vault"
 
 # Install dependencies (root + frontend)
@@ -56,7 +56,7 @@ cd frontend && npm install && cd ..
 Create `.env` file in project root (never commit secrets):
 
 ```env
-# Hardhat deployer (Moonbeam)
+# Hardhat deployer (Polkadot)
 PRIVATE_KEY=your_private_key_without_0x
 MOONBASE_RPC_URL=https://rpc.api.moonbase.moonbeam.network
 
@@ -129,15 +129,15 @@ Carbon Vault/
 
 ## 🔧 Smart Contracts
 
-### **Target Deployment: Moonbase Alpha**
+### **Live Deployment: Polkadot Testnet**
 
 | Contract | Address | Purpose |
 |----------|---------|---------|
-| **CVTMinting** | _TBD (deploy to Moonbase Alpha)_ | ERC20 token minting + faucet |
-| **CVTStaking** | _TBD_ | Staking & rewards |
-| **CVTMarketplace** | _TBD_ | P2P trading |
-| **ValidatorRewards** | _TBD_ | Validator incentives |
-| **CarbonOffsetVerifier** | _TBD_ | ZK proof verification |
+| **CVTMinting** | `0x647F8C626a90b5b8D4A69723bB672C759DD8A027` | ERC20 carbon credit token |
+| **CVTStaking** | `0xCa722d2b5EF1B6d3035b4fe905F1455B8b5809ab` | Staking & rewards |
+| **CVTMarketplace** | `0xAd72e9d18e6D2d70c081EDe1747fb8813C639446` | P2P trading |
+| **ValidatorRewards** | `0x80bBdD4D4606DF5Ba6561e4B9C4a59B49061f713` | Validator incentives |
+| **CarbonOffsetVerifier** | `0xc5645f895a48c8A572368AaFeaAb2D42d1203819` | ZK proof verification |
 
 ### **Key Functions**
 
@@ -186,14 +186,14 @@ npx hardhat test
 ### **Deploy Contracts**
 
 ```bash
-# Deploy to Moonbase Alpha
+# Deploy to Polkadot testnet
 npx hardhat run scripts/deploy-cvt-system.js --network moonbaseAlpha
 
 # Point marketplace at a stablecoin (defaults to CVT token if none supplied)
 npx hardhat run scripts/update-marketplace-stablecoin.js --network moonbaseAlpha
 # To accept native GLMR payments, pass STABLECOIN_ADDRESS=0x0000000000000000000000000000000000000000
 
-# Deploy to Moonbeam Mainnet
+# Deploy to Polkadot mainnet
 npx hardhat run scripts/deploy-cvt-system.js --network moonbeam
 ```
 
@@ -343,14 +343,14 @@ node scripts/verify-proof.js
 
 ## 🌐 Network Information
 
-### **Moonbase Alpha (Testnet)**
+### **Polkadot Testnet**
 
 - **Chain ID**: 1287
 - **RPC URL**: https://rpc.api.moonbase.moonbeam.network
 - **Explorer**: https://moonbase.moonscan.io
 - **Faucet**: https://docs.moonbeam.network/builders/get-started/faucet/
 
-### **Moonbeam Mainnet**
+### **Polkadot Mainnet**
 
 - **Chain ID**: 1284
 - **RPC URL**: https://rpc.api.moonbeam.network
@@ -439,9 +439,9 @@ cd frontend && npm run dev
 - [ZK Circuits](zk-circuits/README.md)
 
 ### **Network**
-- [Moonbeam Docs](https://docs.moonbeam.network)
-- [Moonbase Faucet](https://docs.moonbeam.network/builders/get-started/faucet/)
-- [Moonbase Explorer](https://moonbase.moonscan.io)
+- [Polkadot Docs](https://polkadot.network/developers/)
+- [Polkadot Faucet (GLMR)](https://docs.moonbeam.network/builders/get-started/faucet/)
+- [Polkadot Explorer](https://moonbase.moonscan.io)
 
 ### **Tools**
 - [Hardhat](https://hardhat.org)
@@ -487,7 +487,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Built on [Moonbeam Network](https://moonbeam.network)
+- Built on the [Polkadot Network](https://polkadot.network)
 - UI components from [shadcn/ui](https://ui.shadcn.com)
 - ZK circuits powered by [Circom](https://docs.circom.io)
 - Web3 integration with [wagmi](https://wagmi.sh)
