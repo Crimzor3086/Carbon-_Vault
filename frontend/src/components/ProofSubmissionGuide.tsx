@@ -456,21 +456,9 @@ export function ProofSubmissionGuide() {
         </Tabs>
 
         <div className="mt-6 pt-6 border-t">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Terminal className="h-4 w-4" />
-              <span>Need more help? Check the documentation</span>
-            </div>
-            <Button variant="outline" size="sm" asChild>
-              <a
-                href="https://github.com/Innovah-Tech/Carbon-Vault/blob/main/PROOF_SUBMISSION_GUIDE.md"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Code className="h-4 w-4 mr-2" />
-                View Full Guide
-              </a>
-            </Button>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Terminal className="h-4 w-4" />
+            <span>Need more help? Check the documentation</span>
           </div>
         </div>
       </CardContent>
