@@ -1,0 +1,16 @@
+{
+  "network": "mantleSepolia",
+  "chainId": "5003",
+  "timestamp": "2025-11-17T09:49:32.803Z",
+  "contracts": {
+    "CVTMinting": "0xA0ba6B90cB2F61e2aa8e55D1f40C49D91628a72A",
+    "ValidatorRewards": "0xB7E4423024103c253133541B9b1664114b781399",
+    "CVTMarketplace": "0x616Afef9723daE3Ce650233DF4cAa301F1D44212",
+    "CVTStaking": "0x2dcC36C96f7d1405507fa993513DbF56B11698eF"
+  },
+  "deployer": "0x7c538b83D0295f94C4bBAf8302095d9ED4b2Ad5f",
+  "notes": {
+    "zkVerifier": "Deploy Groth16Verifier from zk-circuits/build/Verifier.sol separately",
+    "stablecoin": "Set STABLECOIN_ADDRESS environment variable for production"
+  }
+}
