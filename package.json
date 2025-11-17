@@ -1,16 +1,16 @@
 {
   "name": "carbonvault",
   "version": "1.0.0",
-  "description": "RWA Tokenization Platform with ZK Privacy on Mantle Network",
+  "description": "RWA Tokenization Platform with ZK Privacy on Moonbeam Network",
   "main": "index.js",
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "deploy:mantle": "hardhat run scripts/deploy.js --network mantle",
-    "deploy:mantle-sepolia": "hardhat run scripts/deploy.js --network mantleSepolia",
+    "deploy:moonbeam": "hardhat run scripts/deploy.js --network moonbeam",
+    "deploy:moonbase": "hardhat run scripts/deploy.js --network moonbaseAlpha",
     "deploy:cvt-system": "hardhat run scripts/deploy-cvt-system.js",
-    "deploy:cvt-system:mantle": "hardhat run scripts/deploy-cvt-system.js --network mantle",
-    "deploy:cvt-system:mantle-sepolia": "hardhat run scripts/deploy-cvt-system.js --network mantleSepolia",
+    "deploy:cvt-system:moonbeam": "hardhat run scripts/deploy-cvt-system.js --network moonbeam",
+    "deploy:cvt-system:moonbase": "hardhat run scripts/deploy-cvt-system.js --network moonbaseAlpha",
     "node": "hardhat node",
     "lint": "eslint .",
     "format": "prettier --write ."
@@ -20,7 +20,8 @@
     "realfi",
     "zk",
     "privacy",
-    "mantle",
+    "moonbeam",
+    "polkadot",
     "carbon",
     "tokenization"
   ],

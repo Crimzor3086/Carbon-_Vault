@@ -14,15 +14,15 @@ module.exports = {
     },
   },
   networks: {
-    mantle: {
-      url: process.env.MANTLE_RPC_URL || "https://rpc.mantle.xyz",
+    moonbeam: {
+      url: process.env.MOONBEAM_RPC_URL || "https://rpc.api.moonbeam.network",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      chainId: 5000,
+      chainId: 1284,
     },
-    mantleSepolia: {
-      url: process.env.MANTLE_SEPOLIA_RPC_URL || "https://rpc.sepolia.mantle.xyz",
+    moonbaseAlpha: {
+      url: process.env.MOONBASE_RPC_URL || "https://rpc.api.moonbase.moonbeam.network",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      chainId: 5003,
+      chainId: 1287,
     },
     hardhat: {
       chainId: 1337,
@@ -36,24 +36,24 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-      mantle: process.env.MANTLE_API_KEY || "",
-      mantleSepolia: process.env.MANTLE_SEPOLIA_API_KEY || "",
+      moonbeam: process.env.MOONBEAM_API_KEY || "",
+      moonbaseAlpha: process.env.MOONBASE_API_KEY || "",
     },
     customChains: [
       {
-        network: "mantle",
-        chainId: 5000,
+        network: "moonbeam",
+        chainId: 1284,
         urls: {
-          apiURL: "https://explorer.mantle.xyz/api",
-          browserURL: "https://explorer.mantle.xyz",
+          apiURL: "https://api-moonbeam.moonscan.io/api",
+          browserURL: "https://moonbeam.moonscan.io",
         },
       },
       {
-        network: "mantleSepolia",
-        chainId: 5003,
+        network: "moonbaseAlpha",
+        chainId: 1287,
         urls: {
-          apiURL: "https://explorer.sepolia.mantle.xyz/api",
-          browserURL: "https://explorer.sepolia.mantle.xyz",
+          apiURL: "https://api-moonbase.moonscan.io/api",
+          browserURL: "https://moonbase.moonscan.io",
         },
       },
     ],

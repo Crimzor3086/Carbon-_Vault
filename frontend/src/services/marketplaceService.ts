@@ -2,12 +2,12 @@ import { formatUnits, parseUnits } from 'viem';
 
 // Pricing anchors (Nov 17 2025)
 // Source: CarbonMinus "Carbon Credits 2025" (nature-based removals ≈ $24/t)
-// Source: Coinpedia live Mantle price (MNT ≈ $1.19)
-export const MNT_PRICE_USD = 1.19;
+// Source: CoinMarketCap live Moonbeam price (GLMR ≈ $0.32)
+export const GLMR_PRICE_USD = 0.32;
 export const CVT_REFERENCE_PRICE_USD = 24;
-export const CVT_REFERENCE_PRICE_MNT = CVT_REFERENCE_PRICE_USD / MNT_PRICE_USD; // ≈20.17
-export const MIN_LISTING_PRICE_MNT = 1;
-export const MIN_LISTING_PRICE_USD = MIN_LISTING_PRICE_MNT * MNT_PRICE_USD;
+export const CVT_REFERENCE_PRICE_GLMR = CVT_REFERENCE_PRICE_USD / GLMR_PRICE_USD; // ≈75
+export const MIN_LISTING_PRICE_GLMR = 1;
+export const MIN_LISTING_PRICE_USD = MIN_LISTING_PRICE_GLMR * GLMR_PRICE_USD;
 
 export interface MarketplaceListing {
   id: number;
@@ -172,7 +172,7 @@ export function validateListingParams(params: CreateListingParams): string | nul
   }
 
   if (parseFloat(pricePerToken) < MIN_LISTING_PRICE_USD) {
-    return `Price must be at least ${MIN_LISTING_PRICE_MNT} MNT (~$${MIN_LISTING_PRICE_USD.toFixed(2)}) per CVT`;
+    return `Price must be at least ${MIN_LISTING_PRICE_GLMR} GLMR (~$${MIN_LISTING_PRICE_USD.toFixed(2)}) per CVT`;
   }
   
   if (expiresInDays < 0) {

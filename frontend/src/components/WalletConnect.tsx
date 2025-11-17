@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { mantleSepolia } from "@/lib/wagmi";
+import { moonbase } from "@/lib/wagmi";
 import { useCVTBalance } from "@/hooks/useContractData";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -80,7 +80,7 @@ export function WalletConnect() {
 
   const handleSwitchNetwork = () => {
     try {
-      switchChain({ chainId: mantleSepolia.id });
+      switchChain({ chainId: moonbase.id });
       toast({
         title: "Switching Network",
         description: "Please approve the network switch in MetaMask",
@@ -95,7 +95,7 @@ export function WalletConnect() {
   };
 
   // Show wrong network warning
-  const isWrongNetwork = isConnected && chainId !== mantleSepolia.id;
+  const isWrongNetwork = isConnected && chainId !== moonbase.id;
 
   if (!isConnected) {
     return (
@@ -146,7 +146,7 @@ export function WalletConnect() {
         </DropdownMenuItem>
         <DropdownMenuItem className="text-xs text-muted-foreground flex items-center justify-between">
           <span>Network:</span>
-          <span className="font-medium text-foreground">Mantle Sepolia</span>
+          <span className="font-medium text-foreground">Moonbase Alpha</span>
         </DropdownMenuItem>
         <DropdownMenuItem className="text-xs text-muted-foreground flex items-center justify-between">
           <div className="flex items-center gap-1">

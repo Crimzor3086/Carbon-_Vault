@@ -2,7 +2,7 @@
 
 > Blockchain-based carbon credit trading and verification platform
 
-[![Network](https://img.shields.io/badge/Network-Mantle%20Sepolia-blue)](https://sepolia.mantle.xyz)
+[![Network](https://img.shields.io/badge/Network-Moonbase%20Alpha-purple)](https://moonbase.moonscan.io)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-success)](https://github.com/Innovah-Tech/Carbon-Vault)
 
@@ -23,7 +23,7 @@
 - 🔐 **Zero-Knowledge Proofs** - Private carbon offset verification
 - 📡 **Data Pipeline** - IoT sensors and satellite data integration
 - 🎨 **Modern UI** - React + TypeScript + TailwindCSS
-- ⛓️ **Smart Contracts** - Solidity on Mantle Network
+- ⛓️ **Smart Contracts** - Solidity on Moonbeam Network
 - 🔄 **Real-time Updates** - Live blockchain data
 
 ---
@@ -36,7 +36,7 @@
 Node.js 18+
 npm or yarn
 MetaMask wallet
-Mantle Sepolia testnet MNT
+Moonbase Alpha DEV tokens (GLMR testnet)
 ```
 
 ### **2. Installation**
@@ -56,12 +56,12 @@ cd frontend && npm install && cd ..
 Create `.env` file in project root (never commit secrets):
 
 ```env
-# Hardhat deployer
+# Hardhat deployer (Moonbeam)
 PRIVATE_KEY=your_private_key_without_0x
-MANTLE_SEPOLIA_RPC_URL=https://rpc.sepolia.mantle.xyz
+MOONBASE_RPC_URL=https://rpc.api.moonbase.moonbeam.network
 
 # Optional marketplace override (default uses CVT token)
-# STABLECOIN_ADDRESS=0x0000000000000000000000000000000000000000  # accept native MNT
+# STABLECOIN_ADDRESS=0x0000000000000000000000000000000000000000  # accept native GLMR
 ```
 
 If you plan to run the Python data pipeline, copy `data-pipeline/.env.example` and set the required API keys (Planet Labs, Sentinel, OpenAQ, etc.).
@@ -78,10 +78,10 @@ npm run dev
 
 ```bash
 # Mint 100 CVT
-npx hardhat run scripts/mint-simple.js --network mantleSepolia
+npx hardhat run scripts/mint-simple.js --network moonbaseAlpha
 
 # Mint 500 CVT
-npx hardhat run scripts/mint-500.js --network mantleSepolia
+npx hardhat run scripts/mint-500.js --network moonbaseAlpha
 ```
 
 ---
@@ -129,15 +129,15 @@ Carbon Vault/
 
 ## 🔧 Smart Contracts
 
-### **Deployed on Mantle Sepolia**
+### **Target Deployment: Moonbase Alpha**
 
 | Contract | Address | Purpose |
 |----------|---------|---------|
-| **CVTMinting** | `0x6354888aAb631cDdc1599123458922bC6CE8fdfc` | ERC20 token minting + faucet |
-| **CVTStaking** | `0xC0E76A94bA3762303cE86d4c30381BbA8Ce6D7d0` | Staking & rewards |
-| **CVTMarketplace** | `0x9237A02a8F823a47eEaC6b59fa469591036e2d3e` | P2P trading |
-| **ValidatorRewards** | `0x165Ac1b08F53a8cd6FA56F6260c987f68E9BfB74` | Validator incentives |
-| **CarbonOffsetVerifier** | `0x6bB4e8E2B46386A910d58b8B9bcf40373e43D649` | ZK proof verification |
+| **CVTMinting** | _TBD (deploy to Moonbase Alpha)_ | ERC20 token minting + faucet |
+| **CVTStaking** | _TBD_ | Staking & rewards |
+| **CVTMarketplace** | _TBD_ | P2P trading |
+| **ValidatorRewards** | _TBD_ | Validator incentives |
+| **CarbonOffsetVerifier** | _TBD_ | ZK proof verification |
 
 ### **Key Functions**
 
@@ -186,21 +186,21 @@ npx hardhat test
 ### **Deploy Contracts**
 
 ```bash
-# Deploy to Mantle Sepolia
-npx hardhat run scripts/deploy-cvt-system.js --network mantleSepolia
+# Deploy to Moonbase Alpha
+npx hardhat run scripts/deploy-cvt-system.js --network moonbaseAlpha
 
 # Point marketplace at a stablecoin (defaults to CVT token if none supplied)
-npx hardhat run scripts/update-marketplace-stablecoin.js --network mantleSepolia
-# To accept native MNT payments, pass STABLECOIN_ADDRESS=0x0000000000000000000000000000000000000000
+npx hardhat run scripts/update-marketplace-stablecoin.js --network moonbaseAlpha
+# To accept native GLMR payments, pass STABLECOIN_ADDRESS=0x0000000000000000000000000000000000000000
 
-# Deploy to Mantle Mainnet
-npx hardhat run scripts/deploy-cvt-system.js --network mantle
+# Deploy to Moonbeam Mainnet
+npx hardhat run scripts/deploy-cvt-system.js --network moonbeam
 ```
 
 ### **Verify Contracts**
 
 ```bash
-npx hardhat verify --network mantleSepolia <CONTRACT_ADDRESS>
+npx hardhat verify --network moonbaseAlpha <CONTRACT_ADDRESS>
 ```
 
 ---
@@ -275,10 +275,10 @@ After running the pipeline you can mint CVT directly from the generated measurem
 
 ```bash
 # Run pipeline + mint newest 2 records (dry-run first)
-HARDHAT_NETWORK=mantleSepolia node scripts/mint-from-pipeline.js --run-pipeline --limit 2 --dry-run
+HARDHAT_NETWORK=moonbaseAlpha node scripts/mint-from-pipeline.js --run-pipeline --limit 2 --dry-run
 
 # Execute for real
-HARDHAT_NETWORK=mantleSepolia node scripts/mint-from-pipeline.js --run-pipeline --limit 2
+HARDHAT_NETWORK=moonbaseAlpha node scripts/mint-from-pipeline.js --run-pipeline --limit 2
 ```
 
 Options include `--min-co2`, `--file <custom_json>`, `--recipient`, `--validator`, and `--dry-run` for previews. The script reuses the proof generation helpers from `mint-cvt.js`, so each qualifying pipeline record becomes a mint transaction with matching project IDs and CO₂ amounts.
@@ -288,7 +288,7 @@ Options include `--min-co2`, `--file <custom_json>`, `--recipient`, `--validator
 During development every connected wallet can claim 5 CVT per hour from the dashboard faucet button. Under the hood this calls `CVTMinting.claimFaucet()`. Owners can tune or disable the faucet with:
 
 ```bash
-npx hardhat console --network mantleSepolia
+npx hardhat console --network moonbaseAlpha
 > const staking = await ethers.getContractAt("CVTMinting", "<address>")
 > await staking.setFaucetConfig(ethers.parseEther("5"), 3600)
 ```
@@ -343,18 +343,18 @@ node scripts/verify-proof.js
 
 ## 🌐 Network Information
 
-### **Mantle Sepolia Testnet**
+### **Moonbase Alpha (Testnet)**
 
-- **Chain ID**: 5003
-- **RPC URL**: https://rpc.sepolia.mantle.xyz
-- **Explorer**: https://explorer.sepolia.mantle.xyz
-- **Faucet**: https://faucet.sepolia.mantle.xyz
+- **Chain ID**: 1287
+- **RPC URL**: https://rpc.api.moonbase.moonbeam.network
+- **Explorer**: https://moonbase.moonscan.io
+- **Faucet**: https://docs.moonbeam.network/builders/get-started/faucet/
 
-### **Mantle Mainnet**
+### **Moonbeam Mainnet**
 
-- **Chain ID**: 5000
-- **RPC URL**: https://rpc.mantle.xyz
-- **Explorer**: https://explorer.mantle.xyz
+- **Chain ID**: 1284
+- **RPC URL**: https://rpc.api.moonbeam.network
+- **Explorer**: https://moonbeam.moonscan.io
 
 ---
 
@@ -364,13 +364,13 @@ node scripts/verify-proof.js
 
 ```bash
 # Mint 100 CVT to your wallet
-npx hardhat run scripts/mint-simple.js --network mantleSepolia
+npx hardhat run scripts/mint-simple.js --network moonbaseAlpha
 ```
 
 ### **Check Balance**
 
 ```bash
-npx hardhat run scripts/check-contract.js --network mantleSepolia
+npx hardhat run scripts/check-contract.js --network moonbaseAlpha
 ```
 
 ### **Stake CVT**
@@ -439,9 +439,9 @@ cd frontend && npm run dev
 - [ZK Circuits](zk-circuits/README.md)
 
 ### **Network**
-- [Mantle Docs](https://docs.mantle.xyz)
-- [Mantle Faucet](https://faucet.sepolia.mantle.xyz)
-- [Block Explorer](https://explorer.sepolia.mantle.xyz)
+- [Moonbeam Docs](https://docs.moonbeam.network)
+- [Moonbase Faucet](https://docs.moonbeam.network/builders/get-started/faucet/)
+- [Moonbase Explorer](https://moonbase.moonscan.io)
 
 ### **Tools**
 - [Hardhat](https://hardhat.org)
@@ -487,7 +487,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Built on [Mantle Network](https://mantle.xyz)
+- Built on [Moonbeam Network](https://moonbeam.network)
 - UI components from [shadcn/ui](https://ui.shadcn.com)
 - ZK circuits powered by [Circom](https://docs.circom.io)
 - Web3 integration with [wagmi](https://wagmi.sh)

@@ -1,9 +1,9 @@
-// Contract addresses (update after deployment)
+// Contract addresses (update after Moonbase/Moonbeam deployment)
 export const CONTRACT_ADDRESSES = {
-  CVTMinting: '0x6354888aAb631cDdc1599123458922bC6CE8fdfc',
-  CVTStaking: '0xC0E76A94bA3762303cE86d4c30381BbA8Ce6D7d0',
-  CVTMarketplace: '0x9237A02a8F823a47eEaC6b59fa469591036e2d3e',
-  ValidatorRewards: '0x165Ac1b08F53a8cd6FA56F6260c987f68E9BfB74',
+  CVTMinting: '0x0000000000000000000000000000000000000000',
+  CVTStaking: '0x0000000000000000000000000000000000000000',
+  CVTMarketplace: '0x0000000000000000000000000000000000000000',
+  ValidatorRewards: '0x0000000000000000000000000000000000000000',
 } as const
 
 // ERC20 ABI (for CVT token)
