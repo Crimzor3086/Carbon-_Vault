@@ -50,6 +50,7 @@ contract CVTMarketplace is ReentrancyGuard, Ownable {
     
     event MarketplaceFeeUpdated(uint256 oldFee, uint256 newFee);
     event FeeRecipientUpdated(address indexed oldRecipient, address indexed newRecipient);
+    event StablecoinUpdated(address indexed newStablecoin, bool nativePaymentsEnabled);
     
     /**
      * @dev Constructor
@@ -63,12 +64,12 @@ contract CVTMarketplace is ReentrancyGuard, Ownable {
         address initialOwner
     ) Ownable(initialOwner) {
         require(_cvt != address(0), "Invalid CVT address");
-        require(_stable != address(0), "Invalid stablecoin address");
-        
         cvtToken = IERC20(_cvt);
         stablecoin = IERC20(_stable);
         feeRecipient = initialOwner; // Set owner as initial fee recipient
         marketplaceFeeBps = 250; // 2.5% default fee
+        
+        emit StablecoinUpdated(_stable, _stable == address(0));
     }
     
     /**
@@ -116,7 +117,7 @@ contract CVTMarketplace is ReentrancyGuard, Ownable {
      * @param listingId ID of the listing to buy from
      * @param amount Amount of CVT tokens to buy (0 = buy all available)
      */
-    function buyCVT(uint256 listingId, uint256 amount) external nonReentrant {
+    function buyCVT(uint256 listingId, uint256 amount) external payable nonReentrant {
         Listing storage listing = listings[listingId];
         
         require(listing.active, "Listing inactive");
@@ -132,18 +133,32 @@ contract CVTMarketplace is ReentrancyGuard, Ownable {
         uint256 totalPrice = purchaseAmount * listing.price;
         uint256 fee = (totalPrice * marketplaceFeeBps) / 10000;
         uint256 sellerAmount = totalPrice - fee;
+        bool payWithNative = address(stablecoin) == address(0);
         
-        // Transfer stablecoin from buyer to seller and fee recipient
-        require(
-            stablecoin.transferFrom(msg.sender, listing.seller, sellerAmount),
-            "Payment to seller failed"
-        );
-        
-        if (fee > 0) {
+        if (payWithNative) {
+            require(msg.value == totalPrice, "Incorrect MNT payment");
+            
+            (bool sentSeller, ) = listing.seller.call{value: sellerAmount}("");
+            require(sentSeller, "Seller payment failed");
+            
+            if (fee > 0) {
+                (bool sentFee, ) = feeRecipient.call{value: fee}("");
+                require(sentFee, "Fee payment failed");
+            }
+        } else {
+            require(msg.value == 0, "Do not send MNT");
+            
             require(
-                stablecoin.transferFrom(msg.sender, feeRecipient, fee),
-                "Fee payment failed"
+                stablecoin.transferFrom(msg.sender, listing.seller, sellerAmount),
+                "Payment to seller failed"
             );
+            
+            if (fee > 0) {
+                require(
+                    stablecoin.transferFrom(msg.sender, feeRecipient, fee),
+                    "Fee payment failed"
+                );
+            }
         }
         
         // Transfer CVT tokens from contract to buyer
@@ -234,8 +249,10 @@ contract CVTMarketplace is ReentrancyGuard, Ownable {
      * @param newStablecoin Address of the new stablecoin contract
      */
     function setStablecoin(address newStablecoin) external onlyOwner {
-        require(newStablecoin != address(0), "Invalid stablecoin address");
         stablecoin = IERC20(newStablecoin);
+        emit StablecoinUpdated(newStablecoin, newStablecoin == address(0));
     }
+    
+    receive() external payable {}
 }
 

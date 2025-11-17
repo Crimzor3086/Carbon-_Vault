@@ -183,6 +183,10 @@ npx hardhat test
 # Deploy to Mantle Sepolia
 npx hardhat run scripts/deploy-cvt-system.js --network mantleSepolia
 
+# Point marketplace at a stablecoin (defaults to CVT token if none supplied)
+npx hardhat run scripts/update-marketplace-stablecoin.js --network mantleSepolia
+# To accept native MNT payments, pass STABLECOIN_ADDRESS=0x0000000000000000000000000000000000000000
+
 # Deploy to Mantle Mainnet
 npx hardhat run scripts/deploy-cvt-system.js --network mantle
 ```

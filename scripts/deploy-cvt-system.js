@@ -6,40 +6,46 @@ async function main() {
   console.log("Deploying CVT system contracts with the account:", deployer.address);
   console.log("Account balance:", (await hre.ethers.provider.getBalance(deployer.address)).toString());
 
-  // Deploy ZK Verifier (placeholder - actual verifier will be generated from Circom)
-  // For now, we'll deploy a mock verifier or use an existing one
-  console.log("\n=== Deploying ZK Verifier ===");
-  // Note: In production, deploy the actual Groth16Verifier from zk-circuits/build/Verifier.sol
-  // For now, we'll skip this and use a placeholder address
-  
-  // Deploy ValidatorRewards
-  console.log("\n=== Deploying ValidatorRewards ===");
-  const ValidatorRewards = await hre.ethers.getContractFactory("ValidatorRewards");
-  const validatorRewards = await ValidatorRewards.deploy(
-    "0x0000000000000000000000000000000000000000", // CVT token address (will be set after CVTMinting deployment)
-    deployer.address
-  );
-  await validatorRewards.waitForDeployment();
-  const validatorRewardsAddress = await validatorRewards.getAddress();
-  console.log("ValidatorRewards deployed to:", validatorRewardsAddress);
+  // Resolve verifier
+  let zkVerifierAddress = process.env.ZK_VERIFIER_ADDRESS;
+  if (!zkVerifierAddress || zkVerifierAddress === "0x0000000000000000000000000000000000000000") {
+    console.log("\n=== Deploying CarbonOffsetVerifier ===");
+    const Verifier = await hre.ethers.getContractFactory("CarbonOffsetVerifier");
+    const verifier = await Verifier.deploy();
+    await verifier.waitForDeployment();
+    zkVerifierAddress = await verifier.getAddress();
+    console.log("CarbonOffsetVerifier deployed to:", zkVerifierAddress);
+  } else {
+    console.log("\nUsing existing verifier:", zkVerifierAddress);
+  }
 
   // Deploy CVTMinting
   console.log("\n=== Deploying CVTMinting ===");
   const CVTMinting = await hre.ethers.getContractFactory("CVTMinting");
   const cvtMinting = await CVTMinting.deploy(
-    "0x0000000000000000000000000000000000000000", // ZK Verifier address (placeholder)
-    validatorRewardsAddress,
+    zkVerifierAddress,
+    "0x0000000000000000000000000000000000000000", // ValidatorRewards (set later)
     deployer.address
   );
   await cvtMinting.waitForDeployment();
   const cvtMintingAddress = await cvtMinting.getAddress();
   console.log("CVTMinting deployed to:", cvtMintingAddress);
 
+  // Deploy ValidatorRewards (now that CVT address is known)
+  console.log("\n=== Deploying ValidatorRewards ===");
+  const ValidatorRewards = await hre.ethers.getContractFactory("ValidatorRewards");
+  const validatorRewards = await ValidatorRewards.deploy(cvtMintingAddress);
+  await validatorRewards.waitForDeployment();
+  const validatorRewardsAddress = await validatorRewards.getAddress();
+  console.log("ValidatorRewards deployed to:", validatorRewardsAddress);
+
+  // Wire contracts together
+  console.log("\n=== Linking Contracts ===");
+  const linkTx = await cvtMinting.setValidatorRewards(validatorRewardsAddress);
+  await linkTx.wait();
+  console.log("Linked CVTMinting -> ValidatorRewards");
+
   // Update ValidatorRewards with CVT token address
-  console.log("\n=== Updating ValidatorRewards ===");
-  // Note: ValidatorRewards needs CVT token address, but CVTMinting is the token itself
-  // We'll need to set this up differently or use CVTMinting as the token
-  
   // Authorize CVTMinting to submit proofs to ValidatorRewards
   await validatorRewards.setAuthorizedSubmitter(cvtMintingAddress, true);
   console.log("Authorized CVTMinting to submit proofs");
@@ -51,9 +57,8 @@ async function main() {
   const stablecoinAddress = process.env.STABLECOIN_ADDRESS || "0x0000000000000000000000000000000000000000";
   const cvtMarketplace = await CVTMarketplace.deploy(
     cvtMintingAddress, // CVT token
-    stablecoinAddress, // Stablecoin
-    deployer.address, // Fee recipient
-    deployer.address // Owner
+    stablecoinAddress, // Stablecoin (0x0 = native)
+    deployer.address // Owner / fee recipient
   );
   await cvtMarketplace.waitForDeployment();
   const cvtMarketplaceAddress = await cvtMarketplace.getAddress();
