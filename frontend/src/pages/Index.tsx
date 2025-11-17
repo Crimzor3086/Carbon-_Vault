@@ -139,7 +139,13 @@ const Index = () => {
             />
             <StatCard
               title="Pending Rewards"
-            <Card className="shadow-card lg:col-span-3">
+              value={isLoading ? "..." : isConnected ? `${pendingRewards} CVT` : "0 CVT"}
+              subtitle={isConnected ? `≈ $${(parseFloat(pendingRewards) * CVT_PRICE_USD).toFixed(2)} USD` : "Connect wallet to view"}
+              icon={Award}
+            />
+          </div>
+
+          <Card className="shadow-card">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                   <div>
@@ -180,11 +186,6 @@ const Index = () => {
                 </Button>
               </CardContent>
             </Card>
-              value={isLoading ? "..." : isConnected ? `${pendingRewards} CVT` : "0 CVT"}
-              subtitle={isConnected ? `≈ $${(parseFloat(pendingRewards) * CVT_PRICE_USD).toFixed(2)} USD` : "Connect wallet to view"}
-              icon={Award}
-            />
-          </div>
 
           <div className="grid gap-6 lg:grid-cols-3">
             {/* Staking Card */}

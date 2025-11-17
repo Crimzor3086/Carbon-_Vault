@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useAccount, useWriteContract } from 'wagmi';
+import { useAccount, useWriteContract, usePublicClient } from 'wagmi';
 import { CONTRACT_ADDRESSES, CVT_MINTING_ABI } from '@/lib/contracts';
 import { useToast } from '@/hooks/use-toast';
 import { useFaucetInfo } from './useContractData';
@@ -9,6 +9,7 @@ export function useFaucet() {
   const { toast } = useToast();
   const [isClaiming, setIsClaiming] = useState(false);
   const { writeContractAsync } = useWriteContract();
+  const publicClient = usePublicClient();
   const { faucetAmount, faucetCooldown, lastFaucetMint, refetch } = useFaucetInfo();
 
   const now = Math.floor(Date.now() / 1000);
@@ -42,7 +43,7 @@ export function useFaucet() {
 
     setIsClaiming(true);
     try {
-      const tx = await writeContractAsync({
+      const hash = await writeContractAsync({
         address: CONTRACT_ADDRESSES.CVTMinting as `0x${string}`,
         abi: CVT_MINTING_ABI,
         functionName: 'claimFaucet',
@@ -53,7 +54,9 @@ export function useFaucet() {
         description: 'Claiming 5 CVT...',
       });
 
-      await tx.wait();
+      if (publicClient) {
+        await publicClient.waitForTransactionReceipt({ hash });
+      }
 
       toast({
         title: 'Faucet claimed',
