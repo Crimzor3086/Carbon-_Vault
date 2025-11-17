@@ -10,6 +10,7 @@ const moonbaseRpc =
   DEFAULT_MOONBASE_RPC
 
 export const config = createConfig({
+  autoConnect: true,
   chains: [moonbaseAlpha],
   connectors: [
     injected({

@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-success)](https://github.com/Innovah-Tech/Carbon-Vault)
 
-**Carbon Vault** is a decentralized platform for tokenizing, trading, and verifying carbon credits using blockchain technology, zero-knowledge proofs, and real-world data integration.
+**Carbon Vault** is a decentralized platform for tokenizing, trading, and verifying carbon credits using blockchain technology, zero-knowledge proofs, and real-world data integration. The full source is available on GitHub at [https://github.com/Crimzor3086/Carbon-_Vault.git](https://github.com/Crimzor3086/Carbon-_Vault.git).
 
 ---
 
@@ -437,6 +437,9 @@ cd frontend && npm run dev
 - [Deployment Guide](DEPLOYMENT_GUIDE.md)
 - [Data Pipeline](data-pipeline/README.md)
 - [ZK Circuits](zk-circuits/README.md)
+
+### **Repository**
+- [GitHub: Crimzor3086/Carbon-_Vault](https://github.com/Crimzor3086/Carbon-_Vault.git)
 
 ### **Network**
 - [Polkadot Docs](https://polkadot.network/developers/)

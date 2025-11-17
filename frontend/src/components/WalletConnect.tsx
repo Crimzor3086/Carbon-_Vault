@@ -16,52 +16,53 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function WalletConnect() {
   const { address, isConnected } = useAccount();
-  const { connect, connectors } = useConnect();
+  const { connectAsync, connectors } = useConnect();
   const { disconnect } = useDisconnect();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
   const { toast } = useToast();
   const { balance, isLoading: balanceLoading } = useCVTBalance();
 
+  const getPreferredConnector = () =>
+    connectors.find((c) => c.id === "injected" || c.name === "MetaMask") ?? connectors[0];
+
   const connectWallet = async () => {
     try {
-      // Check if MetaMask is installed
-      if (typeof window.ethereum === 'undefined') {
+      const connector = getPreferredConnector();
+
+      if (!connector) {
         toast({
-          title: "MetaMask Not Found",
-          description: "Please install MetaMask extension from metamask.io",
+          title: "No Wallet Found",
+          description: "Please install MetaMask or another supported wallet extension.",
           variant: "destructive",
         });
-        window.open('https://metamask.io/download/', '_blank');
         return;
       }
 
-      // Find the injected connector (MetaMask)
-      const metaMaskConnector = connectors.find((c) => c.id === "injected" || c.name === "MetaMask");
-      
-      if (metaMaskConnector) {
-        connect({ connector: metaMaskConnector });
-        toast({
-          title: "Connecting...",
-          description: "Please approve the connection in MetaMask",
-        });
-      } else {
-        // Fallback: try to connect with the first available connector
-        if (connectors.length > 0) {
-          connect({ connector: connectors[0] });
-          toast({
-            title: "Connecting...",
-            description: "Please approve the connection in your wallet",
-          });
-        } else {
-          toast({
-            title: "No Wallet Found",
-            description: "Please refresh the page and try again",
-            variant: "destructive",
-          });
-        }
-      }
+      toast({
+        title: "Connecting...",
+        description: "Please approve the connection in your wallet",
+      });
+
+      await connectAsync({
+        connector,
+        chainId: moonbase.id,
+      });
     } catch (error) {
+      const rejected =
+        typeof error === "object" &&
+        error !== null &&
+        ("code" in error ? (error as { code: number }).code === 4001 : false);
+
+      if (rejected) {
+        toast({
+          title: "Connection Cancelled",
+          description: "Approve the request in your wallet to connect.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       toast({
         title: "Connection Failed",
         description: error instanceof Error ? error.message : "Failed to connect wallet",
@@ -86,9 +87,18 @@ export function WalletConnect() {
         description: "Please approve the network switch in MetaMask",
       });
     } catch (error) {
+      const rejected =
+        typeof error === "object" &&
+        error !== null &&
+        ("code" in error ? (error as { code: number }).code === 4001 : false);
+
       toast({
-        title: "Network Switch Failed",
-        description: error instanceof Error ? error.message : "Failed to switch network",
+        title: rejected ? "Switch Cancelled" : "Network Switch Failed",
+        description: rejected
+          ? "Approve the network switch request to continue."
+          : error instanceof Error
+          ? error.message
+          : "Failed to switch network",
         variant: "destructive",
       });
     }
@@ -146,7 +156,9 @@ export function WalletConnect() {
         </DropdownMenuItem>
         <DropdownMenuItem className="text-xs text-muted-foreground flex items-center justify-between">
           <span>Network:</span>
-          <span className="font-medium text-foreground">Moonbase Alpha</span>
+          <span className="font-medium text-foreground">
+            {chainId === moonbase.id ? "Polkadot Testnet" : `Chain ${chainId ?? "Unknown"}`}
+          </span>
         </DropdownMenuItem>
         <DropdownMenuItem className="text-xs text-muted-foreground flex items-center justify-between">
           <div className="flex items-center gap-1">
